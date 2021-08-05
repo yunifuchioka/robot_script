@@ -3,14 +3,14 @@
  * https://raw.githubusercontent.com/open-dynamic-robot-initiative/solo/master/include/solo/common_programs_header.hpp
  */
 
-# pragma once
+#pragma once
 
-#include <iostream>
-#include <chrono>
 #include <signal.h>  // manage the ctrl+c signal
-#include <atomic>    // thread safe flag for application shutdown management
 
 #include <Eigen/Dense>
+#include <atomic>  // thread safe flag for application shutdown management
+#include <chrono>
+#include <iostream>
 
 #include "real_time_tools/thread.hpp"
 #include "real_time_tools/timer.hpp"
@@ -28,9 +28,7 @@ std::atomic_bool CTRL_C_DETECTED(false);
  *
  * @param s is the id of the signal
  */
-void my_handler(int) {
-  CTRL_C_DETECTED = true;
-}
+void my_handler(int) { CTRL_C_DETECTED = true; }
 
 /**
  * @brief Enable to kill the demos cleanly with a ctrl+c
@@ -63,4 +61,3 @@ void print_vector(std::string v_name,
 }
 
 }  // namespace solo
-

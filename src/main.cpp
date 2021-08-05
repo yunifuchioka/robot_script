@@ -2,9 +2,7 @@
 
 using namespace solo;
 
-THREAD_FUNCTION_RETURN_TYPE control_loop(void*) {
-
-
+THREAD_FUNCTION_RETURN_TYPE control_loop(void *) {
   auto t1 = Clock::now();
   int i = 0;
 
@@ -13,7 +11,7 @@ THREAD_FUNCTION_RETURN_TYPE control_loop(void*) {
 
     if (i % 1000 == 0) {
       auto t2 = Clock::now();
-      rt_printf("iteration %d, time=%lu\n", i, t2-t1);
+      rt_printf("iteration %d, time=%lu\n", i, t2 - t1);
       t1 = Clock::now();
     }
 
@@ -26,7 +24,6 @@ THREAD_FUNCTION_RETURN_TYPE control_loop(void*) {
 }
 
 int main(int argc, char **argv) {
-
   real_time_tools::RealTimeThread thread;
   enable_ctrl_c();
 
