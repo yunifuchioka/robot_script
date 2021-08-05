@@ -24,14 +24,19 @@ include_directories(
 )
 
 add_executable(main src/main.cpp)
-
 target_link_libraries(main
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
 
+add_executable(test_master_board src/test_master_board.cpp)
+target_link_libraries(test_master_board
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
 install(TARGETS
   main
+  test_master_board
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
