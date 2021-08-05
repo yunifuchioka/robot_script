@@ -15,6 +15,7 @@ find_package(ament_cmake REQUIRED)
 find_package(mpi_cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(real_time_tools REQUIRED)
+find_package(odri_control_interface REQUIRED)
 
 include_directories(
   include/robot_script
@@ -24,8 +25,10 @@ include_directories(
 
 add_executable(main src/main.cpp)
 
-# ament_target_dependencies(main Eigen3 real_time_tools)
-target_link_libraries(main Eigen3::Eigen real_time_tools::real_time_tools)
+target_link_libraries(main
+  Eigen3::Eigen
+  real_time_tools::real_time_tools
+  odri_control_interface::odri_control_interface)
 
 install(TARGETS
   main

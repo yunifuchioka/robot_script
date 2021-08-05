@@ -12,6 +12,7 @@
   
   <depend>eigen</depend>
   <depend>real_time_tools</depend>
+  <depend>odri_control_interface</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

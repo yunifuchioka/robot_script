@@ -12,6 +12,10 @@ git clone git@github.com:machines-in-motion/treep_machines_in_motion.git
 ```
 treep --clone REAL_TIME_TOOLS
 ```
+Do the same for the [odri_control_interface](https://github.com/open-dynamic-robot-initiative/odri_control_interface) repo:
+```
+treep --clone ODRI_CONTROL_INTERFACE
+```
 Afterwards, my directory looks like
 ```
 robot_script_ws/
@@ -19,9 +23,12 @@ robot_script_ws/
 	workspace/
 		src/
 			googletest/
+			master-board/
 			mpi_cmake_modules/
+			odri_control_interface/
 			pybind11/
 			real_time_tools/
+			yaml_utils
 ```
 4. Clone this repo
 ```
@@ -35,10 +42,13 @@ robot_script_ws/
 	workspace/
 		src/
 			googletest/
+			master-board/
 			mpi_cmake_modules/
+			odri_control_interface/
 			pybind11/
 			real_time_tools/
 			robot_script/
+			yaml_utils
 ```
 
 ### Run script
