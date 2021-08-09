@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 
   std::chrono::time_point<std::chrono::system_clock> last =
       std::chrono::system_clock::now();
+
   while (!robot_if.IsTimeout() && !robot_if.IsAckMsgReceived()) {
     if (((std::chrono::duration<double>)(std::chrono::system_clock::now() -
                                          last))
@@ -39,8 +40,10 @@ int main(int argc, char **argv) {
     if (((std::chrono::duration<double>)(std::chrono::system_clock::now() -
                                          last))
             .count() > dt) {
-      // do stuff to check that the communication with the master board is
-      // working eg. robot_if.PrintStats();
+      last = std::chrono::system_clock::now();  // last+dt would be better
+      robot_if.ParseSensorData();
+
+      robot_if.SendCommand();
 
     } else {
       std::this_thread::yield();
