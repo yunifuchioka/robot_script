@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iostream>
 
+#include "master_board_sdk/master_board_interface.h"
 #include "real_time_tools/thread.hpp"
 #include "real_time_tools/timer.hpp"
 

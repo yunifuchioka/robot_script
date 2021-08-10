@@ -2,33 +2,49 @@
 
 using namespace solo;
 
-THREAD_FUNCTION_RETURN_TYPE control_loop(void *) {
-  auto t1 = Clock::now();
-  int i = 0;
+static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
+  double dt = 0.001;
 
-  while (!CTRL_C_DETECTED) {
-    i++;
+  MasterBoardInterface* robot_if =
+      (static_cast<MasterBoardInterface*>(robot_if_void_ptr));
 
-    if (i % 1000 == 0) {
-      auto t2 = Clock::now();
-      rt_printf("iteration %d, time=%lu\n", i, t2 - t1);
-      t1 = Clock::now();
+  auto last = Clock::now();
+
+  while (!robot_if->IsTimeout() && !robot_if->IsAckMsgReceived()) {
+    if ((Clock::now() - last).count() > dt) {
+      last = Clock::now();
+      robot_if->SendInit();
     }
-
-    real_time_tools::Timer::sleep_microseconds(1000);
   }
 
-  rt_printf("\nCtrl-c detected. Terminating control loop...\n");
+  if (robot_if->IsTimeout()) {
+    rt_printf("\nTimeout while waiting for ack.\n");
+  }
+
+  while (!CTRL_C_DETECTED) {
+    robot_if->ParseSensorData();
+
+    robot_if->SendCommand();
+
+    real_time_tools::Timer::sleep_sec(dt);
+  }
 
   return THREAD_FUNCTION_RETURN_VALUE;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   real_time_tools::RealTimeThread thread;
   enable_ctrl_c();
 
-  thread.block_memory();
-  thread.create_realtime_thread(control_loop);
+  if (argc != 2) {
+    throw std::runtime_error(
+        "Please provide the interface name (i.e. using 'ifconfig' on linux)");
+  }
+
+  MasterBoardInterface robot_if(argv[1]);
+  robot_if.Init();
+
+  thread.create_realtime_thread(&control_loop, &robot_if);
 
   rt_printf("control loop started \n");
 

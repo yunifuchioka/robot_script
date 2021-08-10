@@ -56,19 +56,20 @@ robot_script_ws/
 ```
 source /opt/ros/dashing/setup.bash
 ```
-3. `cd` to the workspace directory (`cd ~/Documents/robot_script_ws/workspace` in my case), then build with colcon
+2. `cd` to the workspace directory (`cd ~/Documents/robot_script_ws/workspace` in my case), then build with colcon
 ```
 colcon build
+```
+3. Switch to root, which is necessary for the network communcation
+```
+sudo -s
 ```
 4. Source the setup file
 ```
 source install/setup.bash
 ```
-5. Change the permission on `/dev/cpu_dma_latency`. This was taken from the [Machines in Motion Lab's rt_preempt setup script](https://github.com/machines-in-motion/ubuntu_installation_scripts/blob/master/rt-preempt/ubuntu18.04/install_rt_preempt_kernel.sh)
+5. Run the script
 ```
-sudo chmod 0777 /dev/cpu_dma_latency
-``` 
-6. Run the script
+ros2 run robot_script main MY_INTERFACE
 ```
-ros2 run robot_script main
-```
+where `MY_INTERFACE` if the name of the interface, obtained from running `ifconfig`.
