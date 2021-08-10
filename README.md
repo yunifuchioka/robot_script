@@ -52,17 +52,18 @@ robot_script_ws/
 ```
 
 ### Run script
-1. Source ROS2 if this isn't done automatically in the `.bashrc`. In my case
-```
-source /opt/ros/dashing/setup.bash
-```
-2. `cd` to the workspace directory (`cd ~/Documents/robot_script_ws/workspace` in my case), then build with colcon
-```
-colcon build
-```
-3. Switch to root, which is necessary for the network communcation
+1. Switch to root, which is necessary for the network communcation
 ```
 sudo -s
+```
+2. Source ROS2 if this isn't done automatically in the `.bashrc`. In my case
+```
+source /opt/ros/dashing/setup.bash
+source /opt/openrobots/setup.bash
+```
+3. `cd` to the workspace directory (`cd ~/Documents/robot_script_ws/workspace` in my case), then build with colcon
+```
+colcon build
 ```
 4. Source the setup file
 ```
