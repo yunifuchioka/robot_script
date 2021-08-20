@@ -16,6 +16,7 @@ find_package(mpi_cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(real_time_tools REQUIRED)
 find_package(odri_control_interface REQUIRED)
+find_package(Torch REQUIRED)
 
 include_directories(
   include/robot_script
@@ -29,8 +30,13 @@ target_link_libraries(main
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
 
+add_executable(test_torch src/test_torch.cpp)
+target_link_libraries(test_torch
+  "${TORCH_LIBRARIES}")
+
 install(TARGETS
   main
+  test_torch
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
