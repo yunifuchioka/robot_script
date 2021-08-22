@@ -31,6 +31,7 @@ robot_script_ws/
 			yaml_utils
 ```
 4. Download LibTorch from the [PyTorch website](https://pytorch.org/get-started/locally/). The options I chose were:
+
 | Parameter | Value |
 |:---:|:---:|
 | PyTorch Build | Stable |
