@@ -40,7 +40,7 @@ robot_script_ws/
 | Language | C++/ Java |
 | Compute Platform | CPU |
 
-Note that since this machine is running an `rt-preempt` kernel, Nvidia drivers are unsupported for it and the device should be CPU (and not CUDA).
+Additionally, I chose the `cxx11 ABI`. Note that since this machine is running an `rt-preempt` kernel, Nvidia drivers are unsupported for it and the device should be CPU (and not CUDA).
 
 5. Extract the zip file and move the resulting `libtorch` folder to the current directory. Then my directory becomes
 ```

@@ -32,6 +32,7 @@ target_link_libraries(main
 
 add_executable(test_torch src/test_torch.cpp)
 target_link_libraries(test_torch
+  Eigen3::Eigen
   "${TORCH_LIBRARIES}")
 
 install(TARGETS
