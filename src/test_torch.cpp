@@ -39,12 +39,10 @@ int main(int argc, char** argv) {
 
   assert(output_tensor.size(1) == MODEL_OUTPUT_DIM);
 
-  // convert network output to Eigen vector
+  // convert network output to Eigen double vector
   // note the matrix transpose according to the conventions of Eigen and Torch
-  Eigen::Matrix<double, 8, 1> output;
-  for (unsigned int i = 0; i < MODEL_OUTPUT_DIM; i++) {
-    output(i, 0) = output_tensor[0][i].item<double>();
-  }
+  Eigen::Matrix<double, 8, 1> output(
+      output_tensor.to(torch::kDouble).data_ptr<double>());
 
   std::cout << input.transpose() << std::endl;
   std::cout << input_tensor << std::endl;
