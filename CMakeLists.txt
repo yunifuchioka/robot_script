@@ -24,6 +24,11 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
 )
 
+add_library(network_policy src/network_policy.cpp)
+target_link_libraries(network_policy
+  Eigen3::Eigen
+  "${TORCH_LIBRARIES}")
+
 add_executable(main src/main.cpp)
 target_link_libraries(main
   Eigen3::Eigen
@@ -32,8 +37,7 @@ target_link_libraries(main
 
 add_executable(test_torch src/test_torch.cpp)
 target_link_libraries(test_torch
-  Eigen3::Eigen
-  "${TORCH_LIBRARIES}")
+  network_policy)
 
 install(TARGETS
   main
