@@ -31,6 +31,7 @@ target_link_libraries(network_policy
 
 add_executable(main src/main.cpp)
 target_link_libraries(main
+  network_policy
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
