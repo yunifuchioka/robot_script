@@ -24,6 +24,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
   while (!CTRL_C_DETECTED) {
     robot_if->ParseSensorData();
 
+    rt_printf("\33[H\33[2J");
+    robot_if->PrintIMU();
+
     robot_if->SendCommand();
 
     real_time_tools::Timer::sleep_sec(dt);
