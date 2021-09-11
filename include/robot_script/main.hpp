@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "master_board_sdk/master_board_interface.h"
+#include "odri_control_interface/imu.hpp"
 #include "real_time_tools/thread.hpp"
 #include "real_time_tools/timer.hpp"
 
@@ -60,5 +61,11 @@ void print_vector(std::string v_name,
   }
   rt_printf("]\n");
 }
+
+struct ThreadCalibrationData {
+  std::shared_ptr<MasterBoardInterface> robot_if;
+
+  ThreadCalibrationData(std::shared_ptr<MasterBoardInterface> robot_if) : robot_if(robot_if) {}
+};
 
 }  // namespace solo

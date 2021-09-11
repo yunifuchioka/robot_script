@@ -2,11 +2,15 @@
 
 using namespace solo;
 
-static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
+static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double dt = 0.001;
 
-  MasterBoardInterface* robot_if =
-      (static_cast<MasterBoardInterface*>(robot_if_void_ptr));
+  ThreadCalibrationData* thread_data_ptr =
+      (static_cast<ThreadCalibrationData*>(thread_data_void_ptr));
+  std::shared_ptr<MasterBoardInterface> robot_if = thread_data_ptr->robot_if;
+
+  std::shared_ptr<odri_control_interface::IMU> imu =
+      std::make_shared<odri_control_interface::IMU>(robot_if);
 
   auto last = Clock::now();
 
@@ -23,9 +27,16 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
 
   while (!CTRL_C_DETECTED) {
     robot_if->ParseSensorData();
+    imu->ParseSensorData();
+
+    Eigen::Vector4d imu_attitude = imu->GetAttitudeQuaternion();
+    Eigen::Vector3d attitude_euler = imu->GetAttitudeEuler();
 
     rt_printf("\33[H\33[2J");
-    robot_if->PrintIMU();
+    std::cout << "imu_attitude.transpose(): " << imu_attitude.transpose()
+              << std::endl;
+    std::cout << "attitude_euler.transpose(): " << attitude_euler.transpose()
+              << std::endl;
 
     robot_if->SendCommand();
 
@@ -44,10 +55,13 @@ int main(int argc, char** argv) {
         "Please provide the interface name (i.e. using 'ifconfig' on linux)");
   }
 
-  MasterBoardInterface robot_if(argv[1]);
-  robot_if.Init();
+  std::shared_ptr<MasterBoardInterface> robot_if =
+      std::make_shared<MasterBoardInterface>(argv[1]);
+  robot_if->Init();
 
-  thread.create_realtime_thread(&control_loop, &robot_if);
+  ThreadCalibrationData thread_data(robot_if);
+
+  thread.create_realtime_thread(&control_loop, &thread_data);
 
   rt_printf("control loop started \n");
 
