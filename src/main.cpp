@@ -3,7 +3,7 @@
 
 using namespace solo;
 
-static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
+static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double dt = 0.001;
 
   NetworkPolicy my_network_policy("iter9900"); // TODO: don't hardcode this
@@ -11,8 +11,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* robot_if_void_ptr) {
   srand((unsigned int)time(0));  // initialize random seed
   VectorObservation observation;
 
-  MasterBoardInterface* robot_if =
-      (static_cast<MasterBoardInterface*>(robot_if_void_ptr));
+  ThreadCalibrationData* thread_data_ptr =
+      (static_cast<ThreadCalibrationData*>(thread_data_void_ptr));
+  std::shared_ptr<MasterBoardInterface> robot_if = thread_data_ptr->robot_if;
 
   auto last = Clock::now();
 
@@ -60,10 +61,13 @@ int main(int argc, char** argv) {
         "Please provide the interface name (i.e. using 'ifconfig' on linux)");
   }
 
-  MasterBoardInterface robot_if(argv[1]);
-  robot_if.Init();
+  std::shared_ptr<MasterBoardInterface> robot_if =
+      std::make_shared<MasterBoardInterface>(argv[1]);
+  robot_if->Init();
 
-  thread.create_realtime_thread(&control_loop, &robot_if);
+  ThreadCalibrationData thread_data(robot_if);
+
+  thread.create_realtime_thread(&control_loop, &thread_data);
 
   rt_printf("control loop started \n");
 
