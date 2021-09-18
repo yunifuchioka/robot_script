@@ -61,4 +61,11 @@ void print_vector(std::string v_name,
   rt_printf("]\n");
 }
 
+struct ThreadCalibrationData {
+  std::shared_ptr<MasterBoardInterface> robot_if;
+
+  ThreadCalibrationData(std::shared_ptr<MasterBoardInterface> robot_if)
+      : robot_if(robot_if) {}
+};
+
 }  // namespace solo
