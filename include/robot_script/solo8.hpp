@@ -177,10 +177,10 @@ class Solo8 {
   /**
    * State variables
    */
-
   /** @brief If the joint calibration is active or not. */
   bool _is_calibrating;
-
+  /** @brief Indicator if calibration should start. */
+  bool calibrate_request_;
   /** @brief State of the solo robot. */
   Solo8State state_;
 };

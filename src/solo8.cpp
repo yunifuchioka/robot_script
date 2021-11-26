@@ -151,4 +151,40 @@ void Solo8::acquire_sensors() {
   }
 }
 
+void Solo8::send_target_joint_torque(
+    const Eigen::Ref<Vector8d> target_joint_torque) {
+  robot_->joints->SetTorques(target_joint_torque);
+
+  switch (state_) {
+    case Solo8State::initial:
+      robot_->joints->SetZeroCommands();
+      if (!robot_->IsTimeout() && !robot_->IsAckMsgReceived()) {
+        robot_->SendInit();
+      } else if (!robot_->IsReady()) {
+        robot_->SendCommand();
+      } else {
+        state_ = Solo8State::ready;
+      }
+      break;
+
+    case Solo8State::ready:
+      if (calibrate_request_) {
+        calibrate_request_ = false;
+        state_ = Solo8State::calibrate;
+        _is_calibrating = true;
+        robot_->joints->SetZeroCommands();
+      }
+      robot_->SendCommand();
+      break;
+
+    case Solo8State::calibrate:
+      if (calib_ctrl_->Run()) {
+        state_ = Solo8State::ready;
+        _is_calibrating = false;
+      }
+      robot_->SendCommand();
+      break;
+  }
+}
+
 }  // namespace solo
