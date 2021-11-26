@@ -17,6 +17,11 @@ find_package(Eigen3 REQUIRED)
 find_package(real_time_tools REQUIRED)
 find_package(odri_control_interface REQUIRED)
 
+add_library(solo8 src/solo8.cpp)
+target_link_libraries(solo8
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
 include_directories(
   include/robot_script
   # Set manually because Eigen sets a non standard INCLUDE DIR
@@ -25,6 +30,7 @@ include_directories(
 
 add_executable(main src/main.cpp)
 target_link_libraries(main
+  solo8
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)

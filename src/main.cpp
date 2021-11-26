@@ -1,5 +1,8 @@
 #include "main.hpp"
 
+#include "solo8.hpp"
+#include "common.hpp"
+
 using namespace solo;
 
 static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
@@ -45,6 +48,9 @@ int main(int argc, char** argv) {
   std::shared_ptr<MasterBoardInterface> robot_if =
       std::make_shared<MasterBoardInterface>(argv[1]);
   robot_if->Init();
+
+  std::shared_ptr<Solo8> robot = std::make_shared<Solo8>();
+  robot->initialize(std::string(argv[1]));
 
   ThreadCalibrationData thread_data(robot_if);
 
