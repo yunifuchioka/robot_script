@@ -59,7 +59,63 @@ Solo8::Solo8() {
 }
 
 void Solo8::initialize(const std::string& network_id) {
+  // joint limit parameters TODO: set as parameters
+  double max_hip_angle = M_PI * 4;
+  double max_knee_angle = M_PI * 4;
+  double max_joint_velocities = 160.0;
+  double safety_damping = 0.2;
+
+  // define the master board
   main_board_ptr_ = std::make_shared<MasterBoardInterface>(network_id);
+
+  // motor indices and polarities
+  VectorXi motor_numbers(8);
+  motor_numbers << 0, 1, 3, 2, 5, 4, 6, 7;
+  VectorXb motor_reversed(8);
+  motor_reversed << true, true, false, false, true, true, false, false;
+
+  // joint angle limits
+  Eigen::VectorXd joint_lower_limits(8);
+  joint_lower_limits << -max_hip_angle, -max_knee_angle, -max_hip_angle,
+      -max_knee_angle, -max_hip_angle, -max_knee_angle, -max_hip_angle,
+      -max_knee_angle;
+  Eigen::VectorXd joint_upper_limits(8);
+  joint_upper_limits << max_hip_angle, max_knee_angle, max_hip_angle,
+      max_knee_angle, max_hip_angle, max_knee_angle, max_hip_angle,
+      max_knee_angle;
+
+  // define the joint module
+  joints_ = std::make_shared<odri_control_interface::JointModules>(
+      main_board_ptr_, motor_numbers, motor_torque_constants_(0),
+      joint_gear_ratios_(0), motor_max_current_(0), motor_reversed,
+      joint_lower_limits, joint_upper_limits, max_joint_velocities,
+      safety_damping);
+
+  // define the IMU
+  imu_ = std::make_shared<odri_control_interface::IMU>(main_board_ptr_);
+
+  // define the joint calibrator
+  Eigen::VectorXd position_offsets(8);
+  position_offsets.fill(0.);
+  std::vector<odri_control_interface::CalibrationMethod> directions{
+      odri_control_interface::POSITIVE, odri_control_interface::POSITIVE,
+      odri_control_interface::POSITIVE, odri_control_interface::POSITIVE,
+      odri_control_interface::POSITIVE, odri_control_interface::POSITIVE,
+      odri_control_interface::POSITIVE, odri_control_interface::POSITIVE};
+  double calib_Kp = 5.0;
+  double calib_Kd = 0.05;
+  double calib_T = 1.0;
+  double calib_dt = 0.001;
+  calib_ctrl_ = std::make_shared<odri_control_interface::JointCalibrator>(
+      joints_, directions, position_offsets, calib_Kp, calib_Kd, calib_T,
+      calib_dt);
+
+  // define the robot
+  robot_ = std::make_shared<odri_control_interface::Robot>(
+      main_board_ptr_, joints_, imu_, calib_ctrl_);
+
+  // initialize the robot
+  robot_->Init();
 }
 
 }  // namespace solo

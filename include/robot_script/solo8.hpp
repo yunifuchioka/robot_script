@@ -174,11 +174,21 @@ class Solo8 {
    */
   /**
    * @brief Main board drivers.
-   *
    * PC <- Ethernet/Wifi -> main board <- SPI -> Motor Board
    */
   std::shared_ptr<MasterBoardInterface> main_board_ptr_;
+  /** @brief Collection of Joints for solo 8 */
+  std::shared_ptr<odri_control_interface::JointModules> joints_;
+  /** @brief Robot Imu drivers. */
+  std::shared_ptr<odri_control_interface::IMU> imu_;
+  /** @brief Controller to run the calibration procedure */
+  std::shared_ptr<odri_control_interface::JointCalibrator> calib_ctrl_;
+  /** @brief The odri robot abstraction  */
+  std::shared_ptr<odri_control_interface::Robot> robot_;
 
+  /**
+   * State variables
+   */
   /** @brief If the physical estop is pressed or not. */
   bool active_estop_;
 
