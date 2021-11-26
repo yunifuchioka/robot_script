@@ -34,7 +34,6 @@ Solo8::Solo8() {
   joint_velocities_.setZero();
   joint_torques_.setZero();
   joint_target_torques_.setZero();
-  joint_encoder_index_.setZero();
   /**
    * IMU data
    */
@@ -53,7 +52,6 @@ Solo8::Solo8() {
   /**
    * Drivers communication objects
    */
-  active_estop_ = false;
   _is_calibrating = false;
   state_ = Solo8State::initial;
 }
@@ -116,6 +114,41 @@ void Solo8::initialize(const std::string& network_id) {
 
   // initialize the robot
   robot_->Init();
+}
+
+void Solo8::acquire_sensors() {
+  robot_->ParseSensorData();
+  auto joints = robot_->joints;
+  auto imu = robot_->imu;
+
+  // joint data
+  joint_positions_ = joints->GetPositions();
+  joint_velocities_ = joints->GetVelocities();
+  joint_torques_ = joints->GetMeasuredTorques();
+  joint_target_torques_ = joints->GetSentTorques();
+
+  // imu data
+  imu_linear_acceleration_ = imu->GetLinearAcceleration();
+  imu_accelerometer_ = imu->GetAccelerometer();
+  imu_gyroscope_ = imu->GetGyroscope();
+  imu_attitude_ = imu->GetAttitudeEuler();
+  imu_attitude_quaternion_ = imu->GetAttitudeQuaternion();
+
+  // motor status
+  ConstRefVectorXb motor_enabled = joints->GetEnabled();
+  ConstRefVectorXb motor_ready = joints->GetReady();
+  for (int i = 0; i < 8; i++) {
+    motor_enabled_[i] = motor_enabled[i];
+    motor_ready_[i] = motor_ready[i];
+  }
+
+  // motor board status
+  ConstRefVectorXi motor_board_errors = joints->GetMotorDriverErrors();
+  ConstRefVectorXb motor_driver_enabled = joints->GetMotorDriverEnabled();
+  for (int i = 0; i < 4; i++) {
+    motor_board_errors_[i] = motor_board_errors[i];
+    motor_board_enabled_[i] = motor_driver_enabled[i];
+  }
 }
 
 }  // namespace solo

@@ -29,15 +29,15 @@ class Solo8 {
   void initialize(const std::string& network_id);
 
   /**
-   * @brief send_target_torques sends the target currents to the motors
-   */
-  void send_target_joint_torque(const Eigen::Ref<Vector8d> target_joint_torque);
-
-  /**
    * @brief acquire_sensors acquire all available sensors, WARNING !!!!
    * this method has to be called prior to any getter to have up to date data.
    */
   void acquire_sensors();
+
+  /**
+   * @brief send_target_torques sends the target currents to the motors
+   */
+  void send_target_joint_torque(const Eigen::Ref<Vector8d> target_joint_torque);
 
   /**
    * @brief Asynchrounous calibrate the joints by moving to the next joint index
@@ -96,17 +96,6 @@ class Solo8 {
   }
 
   /**
-   * @brief get_joint_encoder_index
-   * @return the position of the index of the encoders a the motor level
-   * WARNING !!!!
-   * The method <acquire_sensors>"()" has to be called
-   * prior to any getter to have up to date data.
-   */
-  const Eigen::Ref<Vector8d> get_joint_encoder_index() {
-    return joint_encoder_index_;
-  }
-
-  /**
    * @brief get_imu_attitude
    * @return  the imu attitude
    * WARNING !!!!
@@ -158,7 +147,6 @@ class Solo8 {
   Vector8d joint_velocities_;
   Vector8d joint_torques_;
   Vector8d joint_target_torques_;
-  Vector8d joint_encoder_index_;
 
   /**
    * IMU data
@@ -189,8 +177,6 @@ class Solo8 {
   /**
    * State variables
    */
-  /** @brief If the physical estop is pressed or not. */
-  bool active_estop_;
 
   /** @brief If the joint calibration is active or not. */
   bool _is_calibrating;
