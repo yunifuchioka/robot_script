@@ -1,39 +1,20 @@
 #include "main.hpp"
 
-#include "solo8.hpp"
 #include "common.hpp"
+#include "solo8.hpp"
 
 using namespace solo;
 
 static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
-  double dt = 0.001;
-
   ThreadCalibrationData* thread_data_ptr =
       (static_cast<ThreadCalibrationData*>(thread_data_void_ptr));
-  std::shared_ptr<MasterBoardInterface> robot_if = thread_data_ptr->robot_if;
+  std::shared_ptr<Solo8> robot = thread_data_ptr->robot;
 
-  auto last = Clock::now();
-
-  while (!robot_if->IsTimeout() && !robot_if->IsAckMsgReceived()) {
-    if ((Clock::now() - last).count() > dt) {
-      last = Clock::now();
-      robot_if->SendInit();
-    }
-  }
-
-  if (robot_if->IsTimeout()) {
-    rt_printf("\nTimeout while waiting for ack.\n");
-  }
+  double dt_des = 0.001;
 
   while (!CTRL_C_DETECTED) {
-    robot_if->ParseSensorData();
-
-    robot_if->SendCommand();
-
-    real_time_tools::Timer::sleep_sec(dt);
-  }
-
-  return THREAD_FUNCTION_RETURN_VALUE;
+    real_time_tools::Timer::sleep_sec(dt_des);
+  }  // endwhile
 }
 
 int main(int argc, char** argv) {
@@ -45,18 +26,24 @@ int main(int argc, char** argv) {
         "Please provide the interface name (i.e. using 'ifconfig' on linux)");
   }
 
-  std::shared_ptr<MasterBoardInterface> robot_if =
-      std::make_shared<MasterBoardInterface>(argv[1]);
-  robot_if->Init();
+  rt_printf("Please put the robot in zero position.\n");
+  rt_printf("\n");
+  rt_printf("Press enter to launch the calibration.\n");
+  char str[256];
+  std::cin.get(str, 256);  // get c-string
 
   std::shared_ptr<Solo8> robot = std::make_shared<Solo8>();
   robot->initialize(std::string(argv[1]));
 
-  ThreadCalibrationData thread_data(robot_if);
+  ThreadCalibrationData thread_data(robot);
 
   thread.create_realtime_thread(&control_loop, &thread_data);
 
   rt_printf("control loop started \n");
+
+  while (!CTRL_C_DETECTED) {
+    real_time_tools::Timer::sleep_sec(0.01);
+  }
 
   thread.join();
 

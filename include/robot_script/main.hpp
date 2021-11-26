@@ -15,6 +15,7 @@
 #include "master_board_sdk/master_board_interface.h"
 #include "real_time_tools/thread.hpp"
 #include "real_time_tools/timer.hpp"
+#include "solo8.hpp"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -62,10 +63,9 @@ void print_vector(std::string v_name,
 }
 
 struct ThreadCalibrationData {
-  std::shared_ptr<MasterBoardInterface> robot_if;
+  std::shared_ptr<Solo8> robot;
 
-  ThreadCalibrationData(std::shared_ptr<MasterBoardInterface> robot_if)
-      : robot_if(robot_if) {}
+  ThreadCalibrationData(std::shared_ptr<Solo8> robot_in) : robot(robot_in) {}
 };
 
 }  // namespace solo
