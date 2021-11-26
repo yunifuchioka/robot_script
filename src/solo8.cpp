@@ -187,4 +187,12 @@ void Solo8::send_target_joint_torque(
   }
 }
 
+bool Solo8::request_calibration(const Vector8d& home_offset_rad) {
+  printf("Solo8::request_calibration called\n");
+  Eigen::VectorXd hor = home_offset_rad;
+  calib_ctrl_->UpdatePositionOffsets(hor);
+  calibrate_request_ = true;
+  return true;
+}
+
 }  // namespace solo
