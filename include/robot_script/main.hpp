@@ -64,6 +64,7 @@ void print_vector(std::string v_name,
 
 struct ThreadCalibrationData {
   std::shared_ptr<Solo8> robot;
+  Vector8d joint_index_to_zero;
 
   ThreadCalibrationData(std::shared_ptr<Solo8> robot_in) : robot(robot_in) {}
 };

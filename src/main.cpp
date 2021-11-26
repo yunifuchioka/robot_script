@@ -11,9 +11,47 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   std::shared_ptr<Solo8> robot = thread_data_ptr->robot;
 
   double dt_des = 0.001;
+  double kp = 3.0;
+  double kd = 0.05;
+  double clamp_val = 5.0;
+
+  Vector8d desired_joint_position;
+  Vector8d desired_torque;
+
+  robot->acquire_sensors();
+
+  // Calibrates the robot.
+  Vector8d joint_index_to_zero = thread_data_ptr->joint_index_to_zero;
+  joint_index_to_zero << 0.126, 0.065, 0.384, 0.248, 0.994, -0.132, 0.339,
+      0.622;
+  robot->request_calibration(joint_index_to_zero);
+
+  size_t count = 0;
+  double t = 0.0;
 
   while (!CTRL_C_DETECTED) {
+    robot->acquire_sensors();
+
+    t += dt_des;
+
+    desired_joint_position.setZero();
+
+    desired_torque =
+        kp * (desired_joint_position - robot->get_joint_positions()) -
+        kd * robot->get_joint_velocities();
+
+    clamp_val = 10.0 * std::min(1.0, t);
+    for (int i = 0; i < 8; i++) {
+      desired_torque(i) = std::min(desired_torque(i), clamp_val);
+      desired_torque(i) = std::max(desired_torque(i), -clamp_val);
+    }
+
+    desired_torque.setZero();
+
+    robot->send_target_joint_torque(desired_torque);
+
     real_time_tools::Timer::sleep_sec(dt_des);
+    ++count;
   }  // endwhile
 }
 
