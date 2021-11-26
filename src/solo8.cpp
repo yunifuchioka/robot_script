@@ -8,7 +8,7 @@ using namespace odri_control_interface;
 
 Solo8::Solo8() {
   /**
-   * Hardware properties
+   * Joint properties
    */
   motor_inertias_.setZero();
   motor_torque_constants_.setZero();
@@ -50,9 +50,11 @@ Solo8::Solo8() {
   motor_torque_constants_.fill(0.025);
   motor_inertias_.fill(0.045);
   joint_gear_ratios_.fill(9.0);
-
+  /**
+   * Drivers communication objects
+   */
   active_estop_ = false;
-
+  _is_calibrating = false;
   state_ = Solo8State::initial;
 }
 

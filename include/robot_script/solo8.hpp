@@ -18,7 +18,7 @@ enum Solo8State { initial, ready, calibrate };
 class Solo8 {
  public:
   /**
-   * constructor
+   * @brief constructor to initialize values for variables
    */
   Solo8();
 
