@@ -26,6 +26,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   joint_index_to_zero = openData("../config/calib_data.csv");
   robot->request_calibration(joint_index_to_zero);
 
+  robot->set_joint_position_gains(kp);
+  robot->set_joint_velocity_gains(kd);
+
   size_t count = 0;
   double t = 0.0;
 
@@ -53,7 +56,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double clamp_val = safety_torque_limit * safety_interp;
     desired_torque = desired_torque.cwiseMin(clamp_val).cwiseMax(-clamp_val);
 
-    robot->send_target_joint_torque(desired_torque);
+    // robot->set_joint_desired_torques(desired_torque);
+    robot->set_joint_desired_positions(desired_joint_position);
+    robot->send_joint_commands();
 
     if ((count % 100) == 0) {
       printf("\n");

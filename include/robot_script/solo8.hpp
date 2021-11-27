@@ -35,9 +35,10 @@ class Solo8 {
   void acquire_sensors();
 
   /**
-   * @brief send_target_torques sends the target currents to the motors
+   * @brief send_joint_commands sends the sends desired PD+torque targets to
+   * motors
    */
-  void send_target_joint_torque(const Eigen::Ref<Vector8d> target_joint_torque);
+  void send_joint_commands();
 
   /**
    * @brief Asynchrounous calibrate the joints by moving to the next joint index
@@ -85,14 +86,14 @@ class Solo8 {
 
   /**
    * @brief get_joint_torques
-   * @return the target joint torques
+   * @return the sent joint torques
    * WARNING !!!!
    * The method <acquire_sensors>"()" has to be called
    * prior to any getter to have up to date data.
 
    */
-  const Eigen::Ref<Vector8d> get_joint_target_torques() {
-    return joint_target_torques_;
+  const Eigen::Ref<Vector8d> get_joint_sent_torques() {
+    return joint_sent_torques_;
   }
 
   /**
@@ -148,6 +149,43 @@ class Solo8 {
     return imu_attitude_quaternion_;
   }
 
+  /**
+   * Setter functions for joints, input is Eigen vector
+   */
+  void set_joint_desired_torques(const Vector8d input_vector) {
+    joint_desired_torques_ = input_vector;
+  }
+  void set_joint_desired_positions(const Vector8d input_vector) {
+    joint_desired_positions_ = input_vector;
+  }
+  void set_joint_desired_velocities(const Vector8d input_vector) {
+    joint_desired_velocities_ = input_vector;
+  }
+  void set_joint_position_gains(const Vector8d input_vector) {
+    joint_position_gains_ = input_vector;
+  }
+  void set_joint_velocity_gains(const Vector8d input_vector) {
+    joint_velocity_gains_ = input_vector;
+  }
+  /**
+   * Setter functions for joints, input is double
+   */
+  void set_joint_desired_torques(const double input_double) {
+    joint_desired_torques_.fill(input_double);
+  }
+  void set_joint_desired_positions(const double input_double) {
+    joint_desired_positions_.fill(input_double);
+  }
+  void set_joint_desired_velocities(const double input_double) {
+    joint_desired_velocities_.fill(input_double);
+  }
+  void set_joint_position_gains(const double input_double) {
+    joint_position_gains_.fill(input_double);
+  }
+  void set_joint_velocity_gains(const double input_double) {
+    joint_velocity_gains_.fill(input_double);
+  }
+
  private:
   /**
    * Joint properties
@@ -190,7 +228,13 @@ class Solo8 {
   Vector8d joint_positions_;
   Vector8d joint_velocities_;
   Vector8d joint_torques_;
-  Vector8d joint_target_torques_;
+  Vector8d joint_sent_torques_;
+
+  Vector8d joint_desired_torques_;
+  Vector8d joint_desired_positions_;
+  Vector8d joint_desired_velocities_;
+  Vector8d joint_position_gains_;
+  Vector8d joint_velocity_gains_;
 
   /**
    * IMU data

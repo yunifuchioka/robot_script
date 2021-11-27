@@ -24,7 +24,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
 
-    robot->send_target_joint_torque(eight_zeros);
+    robot->set_joint_desired_torques(0.0);
+    robot->send_joint_commands();
 
     if ((count % 100) == 0) {
       //   print_vector("Home offset angle [Rad]",

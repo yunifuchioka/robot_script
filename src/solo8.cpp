@@ -16,6 +16,12 @@ Solo8::Solo8() {
   motor_max_current_.setZero();
   max_joint_torques_.setZero();
   joint_zero_positions_.setZero();
+
+  joint_desired_torques_.setZero();
+  joint_desired_positions_.setZero();
+  joint_desired_velocities_.setZero();
+  joint_position_gains_.setZero();
+  joint_velocity_gains_.setZero();
   /**
    * Hardware status
    */
@@ -33,7 +39,7 @@ Solo8::Solo8() {
   joint_positions_.setZero();
   joint_velocities_.setZero();
   joint_torques_.setZero();
-  joint_target_torques_.setZero();
+  joint_sent_torques_.setZero();
   /**
    * IMU data
    */
@@ -125,7 +131,7 @@ void Solo8::acquire_sensors() {
   joint_positions_ = joints->GetPositions();
   joint_velocities_ = joints->GetVelocities();
   joint_torques_ = joints->GetMeasuredTorques();
-  joint_target_torques_ = joints->GetSentTorques();
+  joint_sent_torques_ = joints->GetSentTorques();
 
   // imu data
   imu_linear_acceleration_ = imu->GetLinearAcceleration();
@@ -151,9 +157,12 @@ void Solo8::acquire_sensors() {
   }
 }
 
-void Solo8::send_target_joint_torque(
-    const Eigen::Ref<Vector8d> target_joint_torque) {
-  robot_->joints->SetTorques(target_joint_torque);
+void Solo8::send_joint_commands() {
+  robot_->joints->SetTorques(joint_desired_torques_);
+  robot_->joints->SetDesiredPositions(joint_desired_positions_);
+  robot_->joints->SetDesiredVelocities(joint_desired_velocities_);
+  robot_->joints->SetPositionGains(joint_position_gains_);
+  robot_->joints->SetVelocityGains(joint_velocity_gains_);
 
   switch (state_) {
     case Solo8State::initial:
