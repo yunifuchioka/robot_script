@@ -96,6 +96,28 @@ class Solo8 {
   }
 
   /**
+   * @brief get_imu_accelerometer
+   * @return  the imu accelerometer reading
+   * WARNING !!!!
+   * The method <acquire_sensors>"()" has to be called
+   * prior to any getter to have up to date data.
+   */
+  const Eigen::Ref<Eigen::Vector3d> get_imu_accelerometer() {
+    return imu_accelerometer_;
+  }
+
+  /**
+   * @brief get_imu_gyroscope
+   * @return  the imu gyroscope reading
+   * WARNING !!!!
+   * The method <acquire_sensors>"()" has to be called
+   * prior to any getter to have up to date data.
+   */
+  const Eigen::Ref<Eigen::Vector3d> get_imu_gyroscope() {
+    return imu_gyroscope_;
+  }
+
+  /**
    * @brief get_imu_attitude
    * @return  the imu attitude
    * WARNING !!!!
@@ -103,6 +125,28 @@ class Solo8 {
    * prior to any getter to have up to date data.
    */
   const Eigen::Ref<Eigen::Vector3d> get_imu_attitude() { return imu_attitude_; }
+
+  /**
+   * @brief get_imu_linear_acceleration
+   * @return  the imu linear acceleration (ie gravity subtracted out)
+   * WARNING !!!!
+   * The method <acquire_sensors>"()" has to be called
+   * prior to any getter to have up to date data.
+   */
+  const Eigen::Ref<Eigen::Vector3d> get_imu_linear_acceleration() {
+    return imu_linear_acceleration_;
+  }
+
+  /**
+   * @brief get_imu_attitude_quaternion
+   * @return  the imu attitude represented in a quaternion
+   * WARNING !!!!
+   * The method <acquire_sensors>"()" has to be called
+   * prior to any getter to have up to date data.
+   */
+  const Eigen::Ref<Eigen::Vector3d> get_imu_attitude_quaternion() {
+    return imu_attitude_quaternion_;
+  }
 
  private:
   /**
