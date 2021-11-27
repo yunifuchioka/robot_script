@@ -30,7 +30,26 @@ robot_script_ws/
 			real_time_tools/
 			yaml_utils
 ```
-4. Clone this repo
+4. Create a `config` folder. This folder will store configuration files for the robot.
+```
+mkdir config
+```
+then my directory becomes
+```
+robot_script_ws/
+	config/
+	treep_machines_in_motion/
+	workspace/
+		src/
+			googletest/
+			master-board/
+			mpi_cmake_modules/
+			odri_control_interface/
+			pybind11/
+			real_time_tools/
+			yaml_utils
+```
+5. Clone this repo
 ```
 cd workspace/src/
 git clone https://github.com/yunifuchioka/robot_script.git
@@ -38,6 +57,7 @@ git clone https://github.com/yunifuchioka/robot_script.git
 then my directory becomes
 ```
 robot_script_ws/
+	config/
 	treep_machines_in_motion/
 	workspace/
 		src/
@@ -69,8 +89,12 @@ colcon build
 ```
 source install/setup.bash
 ```
-5. Run the script
+5. Calibrate the robot. This needs to be done after every power up of the robot, and it saves a file to the `config` folder created earlier. `MY_INTERFACE` is the name of the network interface, obtained from running `ifconfig`.
+```
+ros2 run robot_script config MY_INTERFACE
+```
+
+6. Run the main script. `MY_INTERFACE` is the name of the network interface, obtained from running `ifconfig`.
 ```
 ros2 run robot_script main MY_INTERFACE
 ```
-where `MY_INTERFACE` if the name of the interface, obtained from running `ifconfig`.
