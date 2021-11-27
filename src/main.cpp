@@ -13,7 +13,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double dt_des = 0.001;
   double kp = 3.0;
   double kd = 0.05;
-  double clamp_val = 5.0;
+  double clamp_val;
 
   Vector8d desired_joint_position;
   Vector8d desired_torque;
@@ -22,8 +22,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   // Calibrates the robot.
   Vector8d joint_index_to_zero = thread_data_ptr->joint_index_to_zero;
-  joint_index_to_zero << 0.126, 0.065, 0.384, 0.248, 0.994, -0.132, 0.339,
-      0.622;
+  joint_index_to_zero << 0.107, 0.096, 0.403, 0.248, 0.305, -0.095, 0.329,
+      0.640;
   robot->request_calibration(joint_index_to_zero);
 
   size_t count = 0;
@@ -33,6 +33,23 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->acquire_sensors();
 
     t += dt_des;
+
+    // // tilt body motion
+    // desired_joint_position << M_PI / 4, -M_PI / 2, M_PI / 4, -M_PI / 2,
+    //     -M_PI / 4, M_PI / 2, -M_PI / 4, M_PI / 2;
+    // double freq = 4.0;
+    // double amp = M_PI / 8;
+    // desired_joint_position(0) += amp * sin(freq * t);
+    // desired_joint_position(1) += -2.0 * amp * sin(freq * t);
+    // desired_joint_position(2) += amp * sin(freq * t);
+    // desired_joint_position(3) += -2.0 * amp * sin(freq * t);
+    // desired_joint_position(4) += amp * sin(freq * t);
+    // desired_joint_position(5) += -2.0 * amp * sin(freq * t);
+    // desired_joint_position(6) += amp * sin(freq * t);
+    // desired_joint_position(7) += -2.0 * amp * sin(freq * t);
+
+    desired_joint_position =
+        desired_joint_position * std::min(1.0, std::max(t - 2.0, 0.0));
 
     desired_joint_position.setZero();
 
@@ -46,9 +63,21 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       desired_torque(i) = std::max(desired_torque(i), -clamp_val);
     }
 
-    desired_torque.setZero();
+    // desired_torque.setZero();
 
     robot->send_target_joint_torque(desired_torque);
+
+    if ((count % 100) == 0) {
+      solo::Vector8d current_index_to_zero =
+          joint_index_to_zero - robot->get_joint_positions();
+
+      printf("\n");
+      print_vector("des_joint_tau", desired_torque);
+      print_vector("    joint_pos", robot->get_joint_positions());
+      print_vector("des_joint_pos", desired_joint_position);
+      print_vector("    joint_vel", robot->get_joint_velocities());
+      print_vector("zero_joint_pos", current_index_to_zero);
+    }
 
     real_time_tools::Timer::sleep_sec(dt_des);
     ++count;
