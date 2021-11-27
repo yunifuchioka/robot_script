@@ -20,13 +20,16 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   size_t count = 0;
 
+  rt_printf("Move the robot to zero position. Press Ctrl-c when done \n");
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
 
     robot->send_target_joint_torque(eight_zeros);
 
     if ((count % 100) == 0) {
-      print_vector("Home offset angle [Rad]", -robot->get_joint_positions());
+      //   print_vector("Home offset angle [Rad]",
+      //   -robot->get_joint_positions());
+      saveData("../config/calib_data.csv", -robot->get_joint_positions());
     }
 
     real_time_tools::Timer::sleep_sec(0.001);

@@ -23,8 +23,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   // Calibrates the robot.
   Vector8d joint_index_to_zero = thread_data_ptr->joint_index_to_zero;
-  joint_index_to_zero << 0.726, -0.602, 0.431, -0.408, -0.422, 1.282, -0.398,
-      0.631;
+  joint_index_to_zero = openData("../config/calib_data.csv");
   robot->request_calibration(joint_index_to_zero);
 
   size_t count = 0;
