@@ -91,7 +91,7 @@ source install/setup.bash
 ```
 5. Calibrate the robot. This needs to be done after every power up of the robot, and it saves a file to the `config` folder created earlier. `MY_INTERFACE` is the name of the network interface, obtained from running `ifconfig`.
 ```
-ros2 run robot_script config MY_INTERFACE
+ros2 run robot_script calibrate MY_INTERFACE
 ```
 
 6. Run the main script. `MY_INTERFACE` is the name of the network interface, obtained from running `ifconfig`.
