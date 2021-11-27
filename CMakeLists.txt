@@ -35,8 +35,16 @@ target_link_libraries(main
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
 
+add_executable(calibrate src/calibrate.cpp)
+target_link_libraries(calibrate
+  solo8
+  Eigen3::Eigen
+  real_time_tools::real_time_tools
+  odri_control_interface::odri_control_interface)
+
 install(TARGETS
   main
+  calibrate
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

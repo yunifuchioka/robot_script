@@ -13,7 +13,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double dt_des = 0.001;
   double kp = 3.0;
   double kd = 0.05;
-  double safety_delay = 1.0;
+  double safety_delay = 2.0;
   double safety_torque_limit = 10.0;
 
   Vector8d desired_joint_position;
@@ -21,11 +21,11 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   robot->acquire_sensors();
 
-  // // Calibrates the robot.
-  // Vector8d joint_index_to_zero = thread_data_ptr->joint_index_to_zero;
-  // joint_index_to_zero << 0.107, 0.096, 0.403, 0.248, 0.305, -0.095, 0.329,
-  //     0.640;
-  // robot->request_calibration(joint_index_to_zero);
+  // Calibrates the robot.
+  Vector8d joint_index_to_zero = thread_data_ptr->joint_index_to_zero;
+  joint_index_to_zero << 0.726, -0.602, 0.431, -0.408, -0.422, 1.282, -0.398,
+      0.631;
+  robot->request_calibration(joint_index_to_zero);
 
   size_t count = 0;
   double t = 0.0;
@@ -46,8 +46,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
         desired_joint_position * safety_interp +
         robot->get_joint_positions() * (1.0 - safety_interp);
 
-    // desired_joint_position.setZero();
-
     desired_torque =
         kp * (desired_joint_position - robot->get_joint_positions()) -
         kd * robot->get_joint_velocities();
@@ -56,20 +54,14 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double clamp_val = safety_torque_limit * safety_interp;
     desired_torque = desired_torque.cwiseMin(clamp_val).cwiseMax(-clamp_val);
 
-    // desired_torque.setZero();
-
     robot->send_target_joint_torque(desired_torque);
 
     if ((count % 100) == 0) {
-      // solo::Vector8d current_index_to_zero =
-      //     joint_index_to_zero - robot->get_joint_positions();
-
       printf("\n");
       print_vector("des_joint_tau", desired_torque);
       print_vector("    joint_pos", robot->get_joint_positions());
       print_vector("des_joint_pos", desired_joint_position);
       print_vector("    joint_vel", robot->get_joint_velocities());
-      // print_vector("zero_joint_pos", current_index_to_zero);
     }
 
     real_time_tools::Timer::sleep_sec(dt_des);
