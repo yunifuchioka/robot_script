@@ -148,7 +148,10 @@ struct ThreadCalibrationData {
   std::shared_ptr<Solo8> robot;
   Vector8d joint_index_to_zero;
 
-  ThreadCalibrationData(std::shared_ptr<Solo8> robot_in) : robot(robot_in) {}
+  ThreadCalibrationData(std::shared_ptr<Solo8> robot_in) {
+    robot = robot_in;
+    joint_index_to_zero = openData("../config/calib_data.csv");
+  }
 };
 
 }  // namespace solo
