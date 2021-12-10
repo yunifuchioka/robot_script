@@ -45,7 +45,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
     // get desired PD+torque targets from controller
-    controller.set_phase(0.0);
+    controller.set_phase(18.0 * t);
     controller.calc_control();
     joint_desired_positions = controller.get_desired_positions();
     joint_desired_velocities = controller.get_desired_velocities();
