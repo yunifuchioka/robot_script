@@ -22,6 +22,11 @@ target_link_libraries(solo8
   Eigen3::Eigen
   odri_control_interface::odri_control_interface)
 
+add_library(phase_controller src/phase_controller.cpp)
+target_link_libraries(phase_controller
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
 include_directories(
   include/robot_script
   # Set manually because Eigen sets a non standard INCLUDE DIR
@@ -31,6 +36,7 @@ include_directories(
 add_executable(main src/main.cpp)
 target_link_libraries(main
   solo8
+  phase_controller
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
