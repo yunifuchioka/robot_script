@@ -9,12 +9,15 @@
 
 class PhaseController : public Controller {
  public:
+  enum MotionType { stand, squat, tilt_body, step_in_place };
+
   /**
    * constructor calls the parent controller constructor, then initializes its
    * own internal variables
    */
   PhaseController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
     phase_ = 0;
+    motion_type_ = MotionType::stand;
   }
 
   /**
@@ -31,7 +34,9 @@ class PhaseController : public Controller {
    * setters for private variables
    */
   void set_phase(double phase) { phase_ = phase; };
+  void set_motion_type(MotionType motion_type) { motion_type_ = motion_type; };
 
  private:
   double phase_;
+  MotionType motion_type_;
 };
