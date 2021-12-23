@@ -2,6 +2,7 @@
 
 #include "common.hpp"
 #include "phase_controller.hpp"
+#include "imu_controller.hpp"
 #include "solo8.hpp"
 
 using namespace solo;
@@ -33,7 +34,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   size_t count = 0;
   double t = 0.0;
 
-  PhaseController controller(robot);
+  IMUController controller(robot);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
@@ -44,8 +45,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
     // get desired PD+torque targets from controller
-    controller.set_phase(16.0 * t);
-    controller.set_motion_type(PhaseController::MotionType::step_in_place);
+    controller.set_motion_type(IMUController::MotionType::tilt_balance);
     controller.calc_control();
     joint_desired_positions = controller.get_desired_positions();
     joint_desired_velocities = controller.get_desired_velocities();
