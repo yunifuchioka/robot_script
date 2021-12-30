@@ -18,6 +18,21 @@ find_package(real_time_tools REQUIRED)
 find_package(odri_control_interface REQUIRED)
 find_package(Torch REQUIRED)
 
+add_library(solo8 src/solo8.cpp)
+target_link_libraries(solo8
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
+add_library(phase_controller src/phase_controller.cpp)
+target_link_libraries(phase_controller
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
+add_library(imu_controller src/imu_controller.cpp)
+target_link_libraries(imu_controller
+  Eigen3::Eigen
+  odri_control_interface::odri_control_interface)
+
 include_directories(
   include/robot_script
   # Set manually because Eigen sets a non standard INCLUDE DIR
@@ -31,7 +46,16 @@ target_link_libraries(network_policy
 
 add_executable(main src/main.cpp)
 target_link_libraries(main
-  network_policy
+  solo8
+  phase_controller
+  imu_controller
+  Eigen3::Eigen
+  real_time_tools::real_time_tools
+  odri_control_interface::odri_control_interface)
+
+add_executable(calibrate src/calibrate.cpp)
+target_link_libraries(calibrate
+  solo8
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
@@ -42,7 +66,7 @@ target_link_libraries(test_torch
 
 install(TARGETS
   main
-  test_torch
+  calibrate
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
