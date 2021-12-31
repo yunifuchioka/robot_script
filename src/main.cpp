@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "phase_controller.hpp"
 #include "imu_controller.hpp"
+#include "network_controller.hpp"
 #include "solo8.hpp"
 
 using namespace solo;

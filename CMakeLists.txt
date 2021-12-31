@@ -33,22 +33,24 @@ target_link_libraries(imu_controller
   Eigen3::Eigen
   odri_control_interface::odri_control_interface)
 
+add_library(network_controller src/network_controller.cpp)
+target_link_libraries(network_controller
+  Eigen3::Eigen
+  "${TORCH_LIBRARIES}"
+  odri_control_interface::odri_control_interface)
+
 include_directories(
   include/robot_script
   # Set manually because Eigen sets a non standard INCLUDE DIR
   ${EIGEN3_INCLUDE_DIR}
 )
 
-add_library(network_policy src/network_policy.cpp)
-target_link_libraries(network_policy
-  Eigen3::Eigen
-  "${TORCH_LIBRARIES}")
-
 add_executable(main src/main.cpp)
 target_link_libraries(main
   solo8
   phase_controller
   imu_controller
+  network_controller
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
@@ -59,10 +61,6 @@ target_link_libraries(calibrate
   Eigen3::Eigen
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
-
-add_executable(test_torch src/test_torch.cpp)
-target_link_libraries(test_torch
-  network_policy)
 
 install(TARGETS
   main
