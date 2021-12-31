@@ -5,7 +5,7 @@ from model import ActorCriticNet
 
 model_dir = "../models/"
 
-model_input_dim = 31
+model_input_dim = 2
 model_hidden_dims = [128, 128]
 model_output_dim = 8
 
