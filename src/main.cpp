@@ -1,5 +1,4 @@
 #include "main.hpp"
-#include "network_policy.hpp"
 
 #include "common.hpp"
 #include "phase_controller.hpp"
