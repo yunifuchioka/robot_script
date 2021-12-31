@@ -62,9 +62,15 @@ target_link_libraries(calibrate
   real_time_tools::real_time_tools
   odri_control_interface::odri_control_interface)
 
+add_executable(test_torch src/test_torch.cpp)
+target_link_libraries(test_torch
+  solo8
+  network_controller)
+
 install(TARGETS
   main
   calibrate
+  test_torch
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
