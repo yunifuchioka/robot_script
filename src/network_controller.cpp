@@ -17,6 +17,10 @@ void NetworkController::calc_control() {
 
   switch (motion_type_) {
     case MotionType::walk_sinusoid: {
+      // set desired position to reference according to residual policy
+      setReferenceMotionWalkSinusoid();
+      desired_positions = desired_positions_reference_;
+
       // construct observation vector
       VectorObservation observation;
       observation << cos(phase_), sin(phase_);
@@ -40,10 +44,31 @@ void NetworkController::calc_control() {
       // convert network output to Eigen double vector. Note the matrix
       // transpose according to the conventions of Eigen and Torch
       VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
-      desired_positions = output;
+      desired_positions += output;
       break;
     }
   }
 
   desired_positions_ = desired_positions;
+}
+
+void NetworkController::setReferenceMotionWalkSinusoid() {
+  Eigen::Matrix<double, 8, 1> desired_joint_position;
+
+  desired_joint_position << M_PI / 4, -M_PI / 2, M_PI / 4, -M_PI / 2, -M_PI / 4,
+      M_PI / 2, -M_PI / 4, M_PI / 2;
+
+  double amp = M_PI / 12;
+  double theta = phase_*8.0;
+
+  desired_joint_position(0) += std::max(amp * sin(theta), 0.0);
+  desired_joint_position(1) += std::min(-2.0 * amp * sin(theta), 0.0);
+  desired_joint_position(2) += std::max(amp * sin(theta + M_PI), 0.0);
+  desired_joint_position(3) += std::min(-2.0 * amp * sin(theta + M_PI), 0.0);
+  desired_joint_position(4) += std::min(amp * sin(theta), 0.0);
+  desired_joint_position(5) += std::max(-2.0 * amp * sin(theta), 0.0);
+  desired_joint_position(6) += std::min(amp * sin(theta + M_PI), 0.0);
+  desired_joint_position(7) += std::max(-2.0 * amp * sin(theta + M_PI), 0.0);
+
+  desired_positions_reference_ = desired_joint_position;
 }

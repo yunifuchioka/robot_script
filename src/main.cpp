@@ -1,9 +1,9 @@
 #include "main.hpp"
 
 #include "common.hpp"
-#include "phase_controller.hpp"
 #include "imu_controller.hpp"
 #include "network_controller.hpp"
+#include "phase_controller.hpp"
 #include "solo8.hpp"
 
 using namespace solo;
@@ -35,7 +35,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   size_t count = 0;
   double t = 0.0;
 
-  PhaseController controller(robot);
+  // PhaseController controller(robot);
+
+  NetworkController controller(robot);
+  controller.initialize_network("phase-walking-12-14/iter32999");
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
@@ -45,13 +48,24 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     // slowly goes from 0 to 1 after some delay
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
-    // get desired PD+torque targets from controller
-    controller.set_phase(16.0 * t);
-    controller.set_motion_type(PhaseController::MotionType::step_in_place);
-    controller.calc_control();
-    joint_desired_positions = controller.get_desired_positions();
-    joint_desired_velocities = controller.get_desired_velocities();
-    joint_desired_torques = controller.get_desired_torques();
+    if ((count % 20) == 0) {
+      controller.set_phase(1.0 * t);
+      controller.calc_control();
+      // NetworkController::VectorAction action =
+      //     controller.get_desired_positions();
+      // std::cout << std::endl << action.transpose() << std::endl;
+      joint_desired_positions = controller.get_desired_positions();
+      joint_desired_velocities = controller.get_desired_velocities();
+      joint_desired_torques = controller.get_desired_torques();
+    }
+
+    // // get desired PD+torque targets from controller
+    // controller.set_phase(16.0 * t);
+    // controller.set_motion_type(PhaseController::MotionType::step_in_place);
+    // controller.calc_control();
+    // joint_desired_positions = controller.get_desired_positions();
+    // joint_desired_velocities = controller.get_desired_velocities();
+    // joint_desired_torques = controller.get_desired_torques();
 
     // warm start desired_joint_position for safety
     joint_desired_positions =

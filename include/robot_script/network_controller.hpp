@@ -51,4 +51,7 @@ class NetworkController : public Controller {
   double phase_;
   MotionType motion_type_;
   torch::jit::script::Module network_;
+  Vector8d desired_positions_reference_;
+
+  void setReferenceMotionWalkSinusoid();
 };
