@@ -58,4 +58,45 @@ class Controller {
   Vector8d desired_positions_;
   Vector8d desired_velocities_;
   Vector8d desired_torques_;
+
+  /**
+   * HELPER FUNCTIONS
+   */
+
+  /**
+   * generic planar 2 link inverse kinematics implementation
+   * returns the closest point within the workspace if the requested point is
+   * outside of it
+   */
+  const Vector2d planar_IK(double l1, double l2, double x, double y,
+                                       bool elbow_up) {
+    double l;
+    double alpha;
+    double cos_beta;
+    double beta;
+    double cos_th2_abs;
+    double th2_abs;
+    Vector2d th;
+
+    l = std::sqrt(x * x + y * y);
+    l = std::max(std::abs(l1 - l2), std::min(l, l1 + l2));
+
+    alpha = std::atan2(y, x);
+
+    cos_beta = (l * l + l1 * l1 - l2 * l2) / (2.0 * l * l1);
+    cos_beta = std::max(-1.0, std::min(cos_beta, 1.0));
+    beta = std::acos(cos_beta);
+
+    cos_th2_abs = (l * l - l1 * l1 - l2 * l2) / (2.0 * l1 * l2);
+    cos_th2_abs = std::max(-1.0, std::min(cos_th2_abs, 1.0));
+    th2_abs = std::acos(cos_th2_abs);
+
+    if (elbow_up) {
+      th << alpha - beta, th2_abs;
+    } else {
+      th << alpha + beta, -th2_abs;
+    }
+
+    return th;
+  }
 };
