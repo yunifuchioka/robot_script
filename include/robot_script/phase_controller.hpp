@@ -9,7 +9,7 @@
 
 class PhaseController : public Controller {
  public:
-  enum MotionType { stand, squat, tilt_body, step_in_place };
+  enum MotionType { stand, squat, tilt_body, step_in_place, walk };
 
   /**
    * constructor calls the parent controller constructor, then initializes its

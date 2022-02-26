@@ -1,8 +1,8 @@
 #include "main.hpp"
 
 #include "common.hpp"
-#include "phase_controller.hpp"
 #include "imu_controller.hpp"
+#include "phase_controller.hpp"
 #include "solo8.hpp"
 
 using namespace solo;
@@ -46,7 +46,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
     // get desired PD+torque targets from controller
     controller.set_phase(16.0 * t);
-    controller.set_motion_type(PhaseController::MotionType::step_in_place);
+    controller.set_motion_type(PhaseController::MotionType::walk);
     controller.calc_control();
     joint_desired_positions = controller.get_desired_positions();
     joint_desired_velocities = controller.get_desired_velocities();
