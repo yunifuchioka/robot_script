@@ -69,7 +69,7 @@ class Controller {
    * outside of it
    */
   const Vector2d planar_IK(double l1, double l2, double x, double y,
-                                       bool elbow_up) {
+                           bool elbow_up) {
     double l;
     double alpha;
     double cos_beta;
@@ -98,5 +98,29 @@ class Controller {
     }
 
     return th;
+  }
+
+  /**
+   * inverse kinematics for the solo 8 robot
+   */
+  Vector8d solo_IK(const Vector8d p, bool* elbow_up) {
+    Eigen::Matrix2d rotate_90;
+    rotate_90 << 0.0, -1.0, 1.0, 0.0;
+
+    Vector2d p_curr;
+    Vector2d x_y_curr;
+    Vector2d th_curr;
+    Vector8d q;
+
+    for (unsigned int leg_idx = 0; leg_idx < 4; leg_idx++) {
+      p_curr = p.segment(leg_idx * 2, 2);
+      x_y_curr = rotate_90 * p_curr;
+      th_curr =
+          planar_IK(0.165, 0.160, x_y_curr(0), x_y_curr(1), elbow_up[leg_idx]);
+      th_curr *= -1.0;
+      q.segment(leg_idx * 2, 2) = th_curr;
+    }
+
+    return q;
   }
 };
