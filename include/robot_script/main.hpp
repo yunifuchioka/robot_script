@@ -150,7 +150,18 @@ struct ThreadCalibrationData {
 
   ThreadCalibrationData(std::shared_ptr<Solo8> robot_in) {
     robot = robot_in;
-    joint_index_to_zero = openData("../config/calib_data.csv");
+
+    // check if calibration file exists, and set joint zero indices accordingly
+    // https://www.tutorialspoint.com/the-best-way-to-check-if-a-file-exists-using-standard-c-cplusplus
+    std::ifstream ifile;
+    ifile.open("../config/calib_data.csv");
+    if (ifile) {
+      // calibration file exists
+      joint_index_to_zero = openData("../config/calib_data.csv");
+    } else {
+      // no calibration file
+      joint_index_to_zero.setZero();
+    }
   }
 };
 
