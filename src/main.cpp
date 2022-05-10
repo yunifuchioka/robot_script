@@ -35,8 +35,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   size_t count = 0;
   double t = 0.0;
 
-  // PhaseController controller(robot);
-
   NetworkController controller(robot);
   controller.initialize_network("05-09-phase-squat");
 
@@ -50,9 +48,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
     controller.set_phase(2.0 * M_PI / 0.8 * t);
     controller.calc_control();
-    // NetworkController::VectorAction action =
-    //     controller.get_desired_positions();
-    // std::cout << std::endl << action.transpose() << std::endl;
     joint_desired_positions = controller.get_desired_positions();
     joint_desired_velocities = controller.get_desired_velocities();
     joint_desired_torques = controller.get_desired_torques();

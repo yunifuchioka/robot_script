@@ -12,7 +12,7 @@
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { walk_sinusoid, squat };
+  enum MotionType { squat };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -53,6 +53,5 @@ class NetworkController : public Controller {
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
 
-  void setReferenceMotionWalkSinusoid();
   void setReferenceMotionSquat();
 };
