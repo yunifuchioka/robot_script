@@ -17,7 +17,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double kp = 3.0;
   double kd = 0.05;
   double safety_delay = 2.0;
-  double safety_torque_limit = 10.0;
+  double safety_torque_limit = 100.0;
 
   Vector8d joint_desired_positions;
   Vector8d joint_desired_velocities;
@@ -36,7 +36,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  controller.initialize_network("05-09-phase-squat");
+  // controller.initialize_network("05-09-phase-squat");
+  // controller.set_motion_type(NetworkController::MotionType::squat);
+  controller.initialize_network("05-09-phase-walk");
+  controller.set_motion_type(NetworkController::MotionType::walk);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
@@ -46,7 +49,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     // slowly goes from 0 to 1 after some delay
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
-    controller.set_phase(2.0 * M_PI / 0.8 * t);
+    // double period = 0.8;   // for squat
+    double period = 2.72;  // for walk
+    controller.set_phase(2.0 * M_PI / period * t);
+    if (t < period * 3.0) {
+      controller.set_phase(0.0);
+    }
     controller.calc_control();
     joint_desired_positions = controller.get_desired_positions();
     joint_desired_velocities = controller.get_desired_velocities();

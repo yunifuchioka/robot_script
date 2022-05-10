@@ -12,7 +12,7 @@
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { squat };
+  enum MotionType { squat, walk };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -54,4 +54,5 @@ class NetworkController : public Controller {
   Vector8d desired_positions_reference_;
 
   void setReferenceMotionSquat();
+  void setReferenceMotionWalk();
 };
