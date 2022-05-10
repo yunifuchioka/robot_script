@@ -6,16 +6,16 @@
 int main(int argc, char** argv) {
 std::shared_ptr<Solo8> robot = std::make_shared<Solo8>();
   NetworkController my_network_controller(robot);
-  my_network_controller.initialize_network(argv[1]);
+  my_network_controller.initialize_network("05-09-phase-squat");
 
-  NetworkController::VectorObservation observation;
+  my_network_controller.set_phase(0.0);
+
   srand((unsigned int)time(0));  // initialize random seed
-  observation << Eigen::MatrixXd::Random(NETWORK_INPUT_DIM, 1);
   my_network_controller.calc_control();
 
   NetworkController::VectorAction action = my_network_controller.get_desired_positions();
 
-  std::cout << observation.transpose() << std::endl;
+
   std::cout << std::endl;
   std::cout << action.transpose() << std::endl;
 

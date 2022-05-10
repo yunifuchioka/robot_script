@@ -12,7 +12,7 @@
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { walk_sinusoid };
+  enum MotionType { walk_sinusoid, squat };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -22,7 +22,7 @@ class NetworkController : public Controller {
    */
   NetworkController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
     phase_ = 0;
-    motion_type_ = MotionType::walk_sinusoid;
+    motion_type_ = MotionType::squat;
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -54,4 +54,5 @@ class NetworkController : public Controller {
   Vector8d desired_positions_reference_;
 
   void setReferenceMotionWalkSinusoid();
+  void setReferenceMotionSquat();
 };
