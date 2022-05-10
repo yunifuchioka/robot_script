@@ -2,8 +2,8 @@
 ## Setup Instructions
 ### Enviroment setup
 See my google docs for setting up ROS2 and an RT_PREEMPT patched machine
-### Set up workspace and clone repos
-1. `mkdir` and `cd` into a directory to contain the workspace folder. In my case `~/Documents/robot_script_ws`
+### Install dependencies and set up project directory
+1. `mkdir` and `cd` into a directory to contain all project files. In my case `~/Documents/robot_script_ws`
 2. Clone the [Machines in Motion Lab treep package](https://github.com/machines-in-motion/treep_machines_in_motion). In my case
 ```
 git clone git@github.com:machines-in-motion/treep_machines_in_motion.git
@@ -54,7 +54,7 @@ robot_script_ws/
 cd workspace/src/
 git clone https://github.com/yunifuchioka/robot_script.git
 ```
-then my directory becomes
+finally, my directory becomes
 ```
 robot_script_ws/
 	config/
@@ -71,7 +71,7 @@ robot_script_ws/
 			yaml_utils
 ```
 
-### Run script
+### Run main script
 1. Switch to root, which is necessary for the network communcation
 ```
 sudo -s
