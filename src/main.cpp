@@ -38,7 +38,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   NetworkController controller(robot);
   // controller.initialize_network("05-09-phase-squat");
   // controller.set_motion_type(NetworkController::MotionType::squat);
-  controller.initialize_network("05-09-phase-walk");
+  controller.initialize_network("05-10-walk-slow");
   controller.set_motion_type(NetworkController::MotionType::walk);
 
   while (!CTRL_C_DETECTED) {
@@ -50,9 +50,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
     // double period = 0.8;   // for squat
-    double period = 2.72;  // for walk
+    double period = 8.16;  // for walk
     controller.set_phase(2.0 * M_PI / period * t);
-    if (t < period * 3.0) {
+    if (t < period * 2.0) {
+      std::cout << t / (2.0 * period) << std::endl;
       controller.set_phase(0.0);
     }
     controller.calc_control();

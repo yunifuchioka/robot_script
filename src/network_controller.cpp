@@ -122,7 +122,7 @@ void NetworkController::setReferenceMotionWalk() {
       M_PI / 2, -M_PI / 4, M_PI / 2;
 
   double amp = M_PI / 12;
-  double theta = phase_ * 8.0;  // 8 step cycles per entire clip
+  double theta = phase_ * 24.0;  // 24 step cycles per entire clip
 
   desired_joint_position(0) += std::max(amp * sin(theta), 0.0);
   desired_joint_position(1) += std::min(-2.0 * amp * sin(theta), 0.0);
