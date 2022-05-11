@@ -145,7 +145,7 @@ class Solo8 {
    * The method <acquire_sensors>"()" has to be called
    * prior to any getter to have up to date data.
    */
-  const Eigen::Ref<Eigen::Vector3d> get_imu_attitude_quaternion() {
+  const Eigen::Ref<Eigen::Vector4d> get_imu_attitude_quaternion() {
     return imu_attitude_quaternion_;
   }
 
