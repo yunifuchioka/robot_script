@@ -14,26 +14,49 @@ void NetworkController::initialize_network(const std::string filename) {
 
 void NetworkController::calc_control() {
   Vector8d desired_positions;
+  VectorObservation observation;
 
   switch (motion_type_) {
     case MotionType::squat: {
       // set desired position to reference according to residual policy
       setReferenceMotionSquat();
       desired_positions = desired_positions_reference_;
+
+      // set observation vector
+      observation << cos(phase_), sin(phase_);
+
       break;
     }
     case MotionType::walk: {
       // set desired position to reference according to residual policy
       setReferenceMotionWalk();
       desired_positions = desired_positions_reference_;
+
+      // construct observation vector
+      VectorObservation observation;
+      observation << cos(phase_), sin(phase_);
+
+      break;
+    }
+
+    case MotionType::walk_joint: {
+      // set desired position to reference according to residual policy
+      setReferenceMotionWalk();
+      desired_positions = desired_positions_reference_;
+
+      // get sensor data
+      Vector8d joint_positions = robot_->get_joint_positions();
+      Vector8d joint_velocities = robot_->get_joint_velocities();
+
+      // construct observation vector
+      VectorObservation observation;
+      observation.segment(0, 8) << joint_positions;
+      observation.segment(8, 8) << joint_velocities;
+      observation.segment(16, 2) << cos(phase_), sin(phase_);
+
       break;
     }
   }
-
-  // construct observation vector
-  VectorObservation observation;
-  observation << cos(phase_), sin(phase_);
-  // TODO: make phase definition consistent between [0,1] vs [0,2*PI]
 
   // convert Eigen double vector to torch double tensor. Note the matrix
   // transpose according to the conventions of Eigen and Torch
