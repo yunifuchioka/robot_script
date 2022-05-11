@@ -20,70 +20,43 @@ void NetworkController::calc_control() {
       // set desired position to reference according to residual policy
       setReferenceMotionSquat();
       desired_positions = desired_positions_reference_;
-
-      // construct observation vector
-      VectorObservation observation;
-      observation << cos(phase_), sin(phase_);
-      // TODO: make phase definition consistent between [0,1] vs [0,2*PI]
-
-      // convert Eigen double vector to torch double tensor. Note the matrix
-      // transpose according to the conventions of Eigen and Torch
-      torch::Tensor input_tensor =
-          torch::from_blob(observation.data(), {1, NETWORK_INPUT_DIM},
-                           at::kDouble)
-              .clone();
-
-      // convert torch double tensor to torchscript float IValue
-      std::vector<torch::jit::IValue> input_ivalue;
-      input_ivalue.push_back(input_tensor.to(torch::kFloat));
-
-      // evaluate network
-      torch::Tensor output_tensor =
-          network_.forward(input_ivalue).toTuple()->elements()[0].toTensor();
-
-      // convert network output to Eigen double vector. Note the matrix
-      // transpose according to the conventions of Eigen and Torch
-      VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
-
-      // residual network
-      desired_positions += output;
       break;
     }
     case MotionType::walk: {
       // set desired position to reference according to residual policy
       setReferenceMotionWalk();
       desired_positions = desired_positions_reference_;
-
-      // construct observation vector
-      VectorObservation observation;
-      observation << cos(phase_), sin(phase_);
-      // TODO: make phase definition consistent between [0,1] vs [0,2*PI]
-
-      // convert Eigen double vector to torch double tensor. Note the matrix
-      // transpose according to the conventions of Eigen and Torch
-      torch::Tensor input_tensor =
-          torch::from_blob(observation.data(), {1, NETWORK_INPUT_DIM},
-                           at::kDouble)
-              .clone();
-
-      // convert torch double tensor to torchscript float IValue
-      std::vector<torch::jit::IValue> input_ivalue;
-      input_ivalue.push_back(input_tensor.to(torch::kFloat));
-
-      // evaluate network
-      torch::Tensor output_tensor =
-          network_.forward(input_ivalue).toTuple()->elements()[0].toTensor();
-
-      // convert network output to Eigen double vector. Note the matrix
-      // transpose according to the conventions of Eigen and Torch
-      VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
-
-      // residual network
-      desired_positions += output;
       break;
     }
   }
 
+  // construct observation vector
+  VectorObservation observation;
+  observation << cos(phase_), sin(phase_);
+  // TODO: make phase definition consistent between [0,1] vs [0,2*PI]
+
+  // convert Eigen double vector to torch double tensor. Note the matrix
+  // transpose according to the conventions of Eigen and Torch
+  torch::Tensor input_tensor =
+      torch::from_blob(observation.data(), {1, NETWORK_INPUT_DIM}, at::kDouble)
+          .clone();
+
+  // convert torch double tensor to torchscript float IValue
+  std::vector<torch::jit::IValue> input_ivalue;
+  input_ivalue.push_back(input_tensor.to(torch::kFloat));
+
+  // evaluate network
+  torch::Tensor output_tensor =
+      network_.forward(input_ivalue).toTuple()->elements()[0].toTensor();
+
+  // convert network output to Eigen double vector. Note the matrix
+  // transpose according to the conventions of Eigen and Torch
+  VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
+
+  // residual network
+  desired_positions += output;
+
+  // set Controller variable to send to motors
   desired_positions_ = desired_positions;
 }
 
