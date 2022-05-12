@@ -7,12 +7,12 @@
 #include "controller.hpp"
 #include "torch/script.h"
 
-#define NETWORK_INPUT_DIM 18
+#define NETWORK_INPUT_DIM 22
 #define NETWORK_OUTPUT_DIM 8
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { squat, walk, walk_joint };
+  enum MotionType { squat, walk, walk_joint, walk_quat };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 

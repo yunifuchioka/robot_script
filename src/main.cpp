@@ -40,8 +40,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.set_motion_type(NetworkController::MotionType::squat);
   // controller.initialize_network("05-10-walk-slow");
   // controller.set_motion_type(NetworkController::MotionType::walk);
-  controller.initialize_network("05-10-joint-obs");
-  controller.set_motion_type(NetworkController::MotionType::walk_joint);
+  // controller.initialize_network("05-10-joint-obs");
+  // controller.set_motion_type(NetworkController::MotionType::walk_joint);
+  controller.initialize_network("05-11-imu-quat");
+  controller.set_motion_type(NetworkController::MotionType::walk_quat);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();

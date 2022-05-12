@@ -56,6 +56,26 @@ void NetworkController::calc_control() {
 
       break;
     }
+    case MotionType::walk_quat: {
+      // set desired position to reference according to residual policy
+      setReferenceMotionWalk();
+      desired_positions = desired_positions_reference_;
+
+      // get sensor data
+      Vector8d joint_positions = robot_->get_joint_positions();
+      Vector8d joint_velocities = robot_->get_joint_velocities();
+      Eigen::Vector4d imu_attitude_quaternion =
+          robot_->get_imu_attitude_quaternion();
+
+      // construct observation vector
+      VectorObservation observation;
+      observation.segment(0, 4) << imu_attitude_quaternion;
+      observation.segment(4, 8) << joint_positions;
+      observation.segment(12, 8) << joint_velocities;
+      observation.segment(20, 2) << cos(phase_), sin(phase_);
+
+      break;
+    }
   }
 
   // convert Eigen double vector to torch double tensor. Note the matrix
