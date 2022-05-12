@@ -15,7 +15,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   double dt_des = 0.001;
   double kp = 3.0;
-  double kd = 0.05;
+  double kd = 0.2;
   double safety_delay = 2.0;
   double safety_torque_limit = 100.0;
 
@@ -42,7 +42,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.set_motion_type(NetworkController::MotionType::walk);
   // controller.initialize_network("05-10-joint-obs");
   // controller.set_motion_type(NetworkController::MotionType::walk_joint);
-  controller.initialize_network("05-11-imu-quat");
+  // controller.initialize_network("05-11-imu-quat");
+  controller.initialize_network("05-12-quat-dist");
   controller.set_motion_type(NetworkController::MotionType::walk_quat);
 
   while (!CTRL_C_DETECTED) {
@@ -53,17 +54,21 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     // slowly goes from 0 to 1 after some delay
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
-    // double period = 0.8;   // for squat
-    double period = 8.16;  // for walk
-    controller.set_phase(2.0 * M_PI / period * t);
-    if (t < period * 2.0) {
-      std::cout << t / (2.0 * period) << std::endl;
-      controller.set_phase(0.0);
+    if (count % 20 == 0) { // control_dt = 0.02 in RL code
+      // double period = 0.8;   // for squat
+      double period = 8.16;  // for walk
+
+      // update network policy
+      controller.set_phase(2.0 * M_PI / period * t);
+      if (t < period * 2.0) {
+        std::cout << t / (2.0 * period) << std::endl;
+        controller.set_phase(0.0);
+      }
+      controller.calc_control();
+      joint_desired_positions = controller.get_desired_positions();
+      joint_desired_velocities = controller.get_desired_velocities();
+      joint_desired_torques = controller.get_desired_torques();
     }
-    controller.calc_control();
-    joint_desired_positions = controller.get_desired_positions();
-    joint_desired_velocities = controller.get_desired_velocities();
-    joint_desired_torques = controller.get_desired_torques();
 
     // warm start desired_joint_position for safety
     joint_desired_positions =
