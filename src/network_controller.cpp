@@ -33,7 +33,6 @@ void NetworkController::calc_control() {
       desired_positions = desired_positions_reference_;
 
       // construct observation vector
-      VectorObservation observation;
       observation << cos(phase_), sin(phase_);
 
       break;
@@ -49,7 +48,6 @@ void NetworkController::calc_control() {
       Vector8d joint_velocities = robot_->get_joint_velocities();
 
       // construct observation vector
-      VectorObservation observation;
       observation.segment(0, 8) << joint_positions;
       observation.segment(8, 8) << joint_velocities;
       observation.segment(16, 2) << cos(phase_), sin(phase_);
@@ -68,7 +66,6 @@ void NetworkController::calc_control() {
           robot_->get_imu_attitude_quaternion();
 
       // construct observation vector
-      VectorObservation observation;
       observation.segment(0, 4) << imu_attitude_quaternion;
       observation.segment(4, 8) << joint_positions;
       observation.segment(12, 8) << joint_velocities;

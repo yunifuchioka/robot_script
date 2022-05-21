@@ -40,11 +40,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.set_motion_type(NetworkController::MotionType::squat);
   // controller.initialize_network("05-10-walk-slow");
   // controller.set_motion_type(NetworkController::MotionType::walk);
-  // controller.initialize_network("05-10-joint-obs");
-  // controller.set_motion_type(NetworkController::MotionType::walk_joint);
+  controller.initialize_network("05-10-joint-obs");
+  controller.set_motion_type(NetworkController::MotionType::walk_joint);
   // controller.initialize_network("05-11-imu-quat");
-  controller.initialize_network("05-12-quat-dist");
-  controller.set_motion_type(NetworkController::MotionType::walk_quat);
+  // controller.initialize_network("05-12-quat-dist");
+  // controller.initialize_network("05-19-vel-const");
+  // controller.set_motion_type(NetworkController::MotionType::walk_quat);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
@@ -86,13 +87,13 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
-    if ((count % 100) == 0) {
-      printf("\n");
-      print_vector("des_joint_tau", joint_desired_torques);
-      print_vector("    joint_pos", robot->get_joint_positions());
-      print_vector("des_joint_pos", joint_desired_positions);
-      print_vector("    joint_vel", robot->get_joint_velocities());
-    }
+    // if ((count % 100) == 0) {
+    //   printf("\n");
+    //   print_vector("des_joint_tau", joint_desired_torques);
+    //   print_vector("    joint_pos", robot->get_joint_positions());
+    //   print_vector("des_joint_pos", joint_desired_positions);
+    //   print_vector("    joint_vel", robot->get_joint_velocities());
+    // }
 
     real_time_tools::Timer::sleep_sec(dt_des);
     ++count;
