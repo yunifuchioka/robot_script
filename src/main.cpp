@@ -40,12 +40,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.set_motion_type(NetworkController::MotionType::squat);
   // controller.initialize_network("05-10-walk-slow");
   // controller.set_motion_type(NetworkController::MotionType::walk);
-  controller.initialize_network("05-10-joint-obs");
-  controller.set_motion_type(NetworkController::MotionType::walk_joint);
-  // controller.initialize_network("05-11-imu-quat");
+  // controller.initialize_network("05-10-joint-obs");
+  // controller.set_motion_type(NetworkController::MotionType::walk_joint);
+  controller.initialize_network("05-11-imu-quat");
   // controller.initialize_network("05-12-quat-dist");
   // controller.initialize_network("05-19-vel-const");
-  // controller.set_motion_type(NetworkController::MotionType::walk_quat);
+  controller.set_motion_type(NetworkController::MotionType::walk_quat);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
@@ -55,7 +55,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     // slowly goes from 0 to 1 after some delay
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
-    if (count % 20 == 0) { // control_dt = 0.02 in RL code
+    if (count % 20 == 0) {  // control_dt = 0.02 in RL code
       // double period = 0.8;   // for squat
       double period = 8.16;  // for walk
 
