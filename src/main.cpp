@@ -41,12 +41,13 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("05-10-walk-slow");
   // controller.set_motion_type(NetworkController::MotionType::walk);
   // controller.initialize_network("05-10-joint-obs");
-  controller.initialize_network("05-26-kp2-joint");
-  controller.set_motion_type(NetworkController::MotionType::walk_joint);
+  // controller.initialize_network("05-26-kp2-joint");
+  // controller.set_motion_type(NetworkController::MotionType::walk_joint);
   // controller.initialize_network("05-11-imu-quat");
   // controller.initialize_network("05-12-quat-dist");
   // controller.initialize_network("05-19-vel-const");
-  // controller.set_motion_type(NetworkController::MotionType::walk_quat);
+  controller.initialize_network("05-26-kp2-imu-v2");
+  controller.set_motion_type(NetworkController::MotionType::walk_quat);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
