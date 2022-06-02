@@ -48,7 +48,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("05-19-vel-const");
   // controller.initialize_network("05-26-kp2-imu-v2");
   // controller.set_motion_type(NetworkController::MotionType::walk_quat);
-  controller.initialize_network("06-01-csv-test");
+  controller.initialize_network("06-01-csv-test2");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
