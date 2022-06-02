@@ -46,8 +46,14 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("05-11-imu-quat");
   // controller.initialize_network("05-12-quat-dist");
   // controller.initialize_network("05-19-vel-const");
-  controller.initialize_network("05-26-kp2-imu-v2");
-  controller.set_motion_type(NetworkController::MotionType::walk_quat);
+  // controller.initialize_network("05-26-kp2-imu-v2");
+  // controller.set_motion_type(NetworkController::MotionType::walk_quat);
+  controller.initialize_network("06-01-csv-test");
+  controller.set_motion_type(NetworkController::MotionType::traj);
+
+  Eigen::MatrixXd ref_traj;
+  ref_traj = openData("../traj/walk_sinusoid.csv");
+  controller.set_traj(ref_traj);
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();

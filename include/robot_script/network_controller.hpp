@@ -12,7 +12,7 @@
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { squat, walk, walk_joint, walk_quat };
+  enum MotionType { squat, walk, walk_joint, walk_quat, traj };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -23,6 +23,7 @@ class NetworkController : public Controller {
   NetworkController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
     phase_ = 0;
     motion_type_ = MotionType::squat;
+    ref_traj_.setZero();
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -46,13 +47,16 @@ class NetworkController : public Controller {
    */
   void set_phase(double phase) { phase_ = phase; };
   void set_motion_type(MotionType motion_type) { motion_type_ = motion_type; };
+  void set_traj(const Eigen::MatrixXd ref_traj) { ref_traj_ = ref_traj; };
 
  private:
   double phase_;
   MotionType motion_type_;
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
+  Eigen::MatrixXd ref_traj_;
 
   void setReferenceMotionSquat();
   void setReferenceMotionWalk();
+  void setReferenceMotionTraj();
 };

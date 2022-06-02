@@ -74,6 +74,26 @@ void NetworkController::calc_control() {
 
       break;
     }
+    case MotionType::traj: {
+      // set desired position to reference according to residual policy
+      setReferenceMotionTraj();
+      desired_positions = desired_positions_reference_;
+
+      // get sensor data
+      Vector8d joint_positions = robot_->get_joint_positions();
+      Vector8d joint_velocities = robot_->get_joint_velocities();
+      Eigen::Vector4d imu_attitude_quaternion =
+          robot_->get_imu_attitude_quaternion();
+
+      observation.segment(0, 4) << imu_attitude_quaternion(3),
+          imu_attitude_quaternion(0), -imu_attitude_quaternion(1),
+          -imu_attitude_quaternion(2);
+      observation.segment(4, 8) << joint_positions;
+      observation.segment(12, 8) << joint_velocities;
+      observation.segment(20, 2) << cos(phase_), sin(phase_);
+
+      break;
+    }
   }
 
   // convert Eigen double vector to torch double tensor. Note the matrix
@@ -146,6 +166,23 @@ void NetworkController::setReferenceMotionWalk() {
   desired_joint_position(5) += std::max(-2.0 * amp * sin(theta), 0.0);
   desired_joint_position(6) += std::min(amp * sin(theta + M_PI), 0.0);
   desired_joint_position(7) += std::max(-2.0 * amp * sin(theta + M_PI), 0.0);
+
+  desired_positions_reference_ = desired_joint_position;
+}
+
+void NetworkController::setReferenceMotionTraj() {
+  Eigen::Vector3d base_pos;
+  Eigen::Vector4d base_quat;
+  Eigen::Matrix<double, 8, 1> desired_joint_position;
+
+  // find reference trajectory index corresponding to current phase
+  int traj_idx =
+      (int)(408 / (2.0 * M_PI) * phase_);  // TODO: don't hard code this!!
+  traj_idx = traj_idx % 816;
+
+  Eigen::Matrix<double, 38, 1> traj_t;
+  traj_t << ref_traj_.row(traj_idx).transpose();
+  desired_joint_position << traj_t.segment(14, 8);
 
   desired_positions_reference_ = desired_joint_position;
 }
