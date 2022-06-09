@@ -48,11 +48,11 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("05-19-vel-const");
   // controller.initialize_network("05-26-kp2-imu-v2");
   // controller.set_motion_type(NetworkController::MotionType::walk_quat);
-  controller.initialize_network("06-01-csv-test2");
+  controller.initialize_network("06-08-fric01");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
-  ref_traj = openData("../traj/walk_sinusoid.csv");
+  ref_traj = openData("../traj/06-06-format4.csv");
   controller.set_traj(ref_traj);
 
   while (!CTRL_C_DETECTED) {

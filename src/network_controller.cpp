@@ -175,10 +175,11 @@ void NetworkController::setReferenceMotionTraj() {
   Eigen::Vector4d base_quat;
   Eigen::Matrix<double, 8, 1> desired_joint_position;
 
+  int max_phase = ref_traj_.rows() - 1;
+
   // find reference trajectory index corresponding to current phase
-  int traj_idx =
-      (int)(408 / (2.0 * M_PI) * phase_);  // TODO: don't hard code this!!
-  traj_idx = traj_idx % 816;
+  int traj_idx = (int)(max_phase / (2.0 * M_PI) * phase_);
+  traj_idx = traj_idx % max_phase;
 
   Eigen::Matrix<double, 38, 1> traj_t;
   traj_t << ref_traj_.row(traj_idx).transpose();
