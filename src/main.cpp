@@ -14,8 +14,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   std::shared_ptr<Solo8> robot = thread_data_ptr->robot;
 
   double dt_des = 0.001;
-  double kp = 2.0;
-  double kd = 0.2;
+  double kp = 3.0;
+  double kd = 0.5;
   double safety_delay = 2.0;
   double safety_torque_limit = 100.0;
 
@@ -48,7 +48,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("05-19-vel-const");
   // controller.initialize_network("05-26-kp2-imu-v2");
   // controller.set_motion_type(NetworkController::MotionType::walk_quat);
-  controller.initialize_network("06-08-fric01");
+  controller.initialize_network("06-09-trot-kp3kd05");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
