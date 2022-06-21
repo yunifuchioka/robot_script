@@ -36,23 +36,11 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  // controller.initialize_network("05-09-phase-squat");
-  // controller.set_motion_type(NetworkController::MotionType::squat);
-  // controller.initialize_network("05-10-walk-slow");
-  // controller.set_motion_type(NetworkController::MotionType::walk);
-  // controller.initialize_network("05-10-joint-obs");
-  // controller.initialize_network("05-26-kp2-joint");
-  // controller.set_motion_type(NetworkController::MotionType::walk_joint);
-  // controller.initialize_network("05-11-imu-quat");
-  // controller.initialize_network("05-12-quat-dist");
-  // controller.initialize_network("05-19-vel-const");
-  // controller.initialize_network("05-26-kp2-imu-v2");
-  // controller.set_motion_type(NetworkController::MotionType::walk_quat);
-  controller.initialize_network("06-09-trot-kp3kd05");
+  controller.initialize_network("06-20-trot");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
-  ref_traj = openData("../traj/06-06-format4.csv");
+  ref_traj = openData("../traj/06-20-trot.csv");
   controller.set_traj(ref_traj);
 
   while (!CTRL_C_DETECTED) {
