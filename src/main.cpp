@@ -15,7 +15,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   double dt_des = 0.001;
   double kp = 3.0;
-  double kd = 0.2;
+  double kd = 0.5;
   double safety_delay = 2.0;
   double safety_torque_limit = 100.0;
 
@@ -36,7 +36,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  controller.initialize_network("06-22-feedforward04");
+  controller.initialize_network("06-23-trot-kp05");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
