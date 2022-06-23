@@ -119,6 +119,8 @@ void NetworkController::calc_control() {
 
   // set Controller variable to send to motors
   desired_positions_ = desired_positions;
+  desired_velocities_ = desired_velocities_reference_;
+  desired_torques_ = desired_torques_reference_;
 }
 
 void NetworkController::setReferenceMotionSquat() {
@@ -174,6 +176,8 @@ void NetworkController::setReferenceMotionTraj() {
   Eigen::Vector3d base_pos;
   Eigen::Vector4d base_quat;
   Eigen::Matrix<double, 8, 1> desired_joint_position;
+  Eigen::Matrix<double, 8, 1> desired_joint_velocity;
+  Eigen::Matrix<double, 8, 1> desired_joint_torque;
 
   int max_phase = ref_traj_.rows() - 1;
 
@@ -184,6 +188,10 @@ void NetworkController::setReferenceMotionTraj() {
   Eigen::Matrix<double, 38, 1> traj_t;
   traj_t << ref_traj_.row(traj_idx).transpose();
   desired_joint_position << traj_t.segment(14, 8);
+  desired_joint_velocity << traj_t.segment(22, 8);
+  desired_joint_torque << traj_t.segment(30, 8);
 
   desired_positions_reference_ = desired_joint_position;
+  desired_velocities_reference_ = desired_joint_velocity;
+  desired_torques_reference_ = desired_joint_torque;
 }

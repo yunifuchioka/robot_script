@@ -24,6 +24,9 @@ class NetworkController : public Controller {
     phase_ = 0;
     motion_type_ = MotionType::squat;
     ref_traj_.setZero();
+    desired_positions_reference_.setZero();
+    desired_velocities_reference_.setZero();
+    desired_torques_reference_.setZero();
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -54,6 +57,8 @@ class NetworkController : public Controller {
   MotionType motion_type_;
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
+  Vector8d desired_velocities_reference_;
+  Vector8d desired_torques_reference_;
   Eigen::MatrixXd ref_traj_;
 
   void setReferenceMotionSquat();
