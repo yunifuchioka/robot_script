@@ -36,7 +36,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  controller.initialize_network("06-23-trot-kp05");
+  controller.initialize_network("06-23-trot-angvel01");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
