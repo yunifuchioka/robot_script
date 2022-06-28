@@ -51,7 +51,9 @@ Solo8::Solo8() {
   /**
    * Setup some known data
    */
-  motor_max_current_.fill(400.0);  // TODO: set as paramters?
+  // max current value:
+  // https://odri.discourse.group/t/motor-current-specifications/190/2
+  motor_max_current_.fill(15.0);
   motor_torque_constants_.fill(0.025);
   motor_inertias_.fill(0.045);
   joint_gear_ratios_.fill(9.0);
@@ -138,7 +140,17 @@ void Solo8::acquire_sensors() {
   imu_accelerometer_ = imu->GetAccelerometer();
   imu_gyroscope_ = imu->GetGyroscope();
   imu_attitude_ = imu->GetAttitudeEuler();
-  imu_attitude_quaternion_ = imu->GetAttitudeQuaternion();
+  // imu_attitude_quaternion_ = imu->GetAttitudeQuaternion();
+  /**
+   * account for mismatch between how quaternions are represented in ODRI code
+   * vs RL code
+   * 1. (w,x,y,z) rather than (x,y,z,w)
+   * 2. Conjugate quaternion for world frame vs body frame
+   * 3. Flip x axis (?) maybe this is a bug in ODRI code?
+   */
+  Eigen::Vector4d raw_imu_quat = imu->GetAttitudeQuaternion();
+  imu_attitude_quaternion_ << raw_imu_quat(3), raw_imu_quat(0),
+      -raw_imu_quat(1), -raw_imu_quat(2);
 
   // motor status
   ConstRefVectorXb motor_enabled = joints->GetEnabled();

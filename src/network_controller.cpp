@@ -65,9 +65,7 @@ void NetworkController::calc_control() {
       Eigen::Vector4d imu_attitude_quaternion =
           robot_->get_imu_attitude_quaternion();
 
-      observation.segment(0, 4) << imu_attitude_quaternion(3),
-          imu_attitude_quaternion(0), -imu_attitude_quaternion(1),
-          -imu_attitude_quaternion(2);
+      observation.segment(0, 4) << imu_attitude_quaternion;
       observation.segment(4, 8) << joint_positions;
       observation.segment(12, 8) << joint_velocities;
       observation.segment(20, 2) << cos(phase_), sin(phase_);
@@ -85,9 +83,7 @@ void NetworkController::calc_control() {
       Eigen::Vector4d imu_attitude_quaternion =
           robot_->get_imu_attitude_quaternion();
 
-      observation.segment(0, 4) << imu_attitude_quaternion(3),
-          imu_attitude_quaternion(0), -imu_attitude_quaternion(1),
-          -imu_attitude_quaternion(2);
+      observation.segment(0, 4) << imu_attitude_quaternion;
       observation.segment(4, 8) << joint_positions;
       observation.segment(12, 8) << joint_velocities;
       observation.segment(20, 2) << cos(phase_), sin(phase_);
