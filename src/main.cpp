@@ -47,8 +47,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/06-24-front-hop.csv");
   controller.set_traj(ref_traj);
 
+  double period = ref_traj(ref_traj.rows() - 1, 0);
+
   // PhaseController controller(robot);
   // controller.set_motion_type(PhaseController::squat);
+  // double period = 0.8;   // for squat
+  // double period = 8.16;  // for walk
 
   auto tic = Clock::now();
   real_time_tools::Timer::sleep_sec(dt_des);
@@ -66,8 +70,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
     if (count % 20 == 0) {  // control_dt = 0.02 in RL code
-      // double period = 0.8;   // for squat
-      double period = 8.16;  // for walk
 
       // update network policy
       controller.set_phase(2.0 * M_PI / period * t);
@@ -97,7 +99,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
-    if ((count % 1) == 0) {
+    if ((count % 20) == 0) {
       toc = std::chrono::duration<double>(Clock::now() - tic).count();
 
       log_vec(0) = toc;
