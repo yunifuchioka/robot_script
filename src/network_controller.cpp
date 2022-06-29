@@ -115,8 +115,8 @@ void NetworkController::calc_control() {
 
   // set Controller variable to send to motors
   desired_positions_ = desired_positions;
-  desired_velocities_ = desired_velocities_reference_;
-  desired_torques_ = desired_torques_reference_;
+  // desired_velocities_ = desired_velocities_reference_;
+  // desired_torques_ = desired_torques_reference_;
 }
 
 void NetworkController::setReferenceMotionSquat() {
