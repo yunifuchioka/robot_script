@@ -206,11 +206,6 @@ void Solo8::send_joint_commands() {
       robot_->SendCommand();
       break;
   }
-
-  // TEMP: confirm behavior of get_joint_sent_torques()
-  std::cout << joint_desired_torques_.transpose() << std::endl
-            << Solo8::get_joint_sent_torques().transpose() << std::endl
-            << std::endl;
 }
 
 bool Solo8::request_calibration(const Vector8d& home_offset_rad) {

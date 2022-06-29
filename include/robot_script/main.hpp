@@ -63,6 +63,22 @@ void print_vector(std::string v_name,
 }
 
 /**
+ * @brief like print_vector, but doesn't print the variable name in order to
+ * make it suitable for piping to a csv file
+ *
+ * @param v the vector to print.
+ */
+void print_vector_csv(const Eigen::Ref<const Eigen::VectorXd> v) {
+  for (int i = 0; i < v.size(); ++i) {
+    rt_printf("%0.3f", v(i));
+    if (i < v.size() - 1) {
+      rt_printf(", ");
+    }
+  }
+  rt_printf("\n");
+}
+
+/**
  *  @brief Helper function for saving Eigen matrix to csv
  *  author: Aleksandar Haber
  *  https://github.com/AleksandarHaber/Save-and-Load-Eigen-Cpp-Matrices-Arrays-to-and-from-CSV-files

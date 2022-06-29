@@ -50,6 +50,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   auto toc = std::chrono::duration<double>(Clock::now() - tic).count();
   real_time_tools::Timer::sleep_sec(dt_des);
 
+  Eigen::VectorXd log_vec(53);  // vector to print when logging to csv
+
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
 
@@ -90,9 +92,18 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
-    if ((count % 1000) == 0) {
+    if ((count % 1) == 0) {
       toc = std::chrono::duration<double>(Clock::now() - tic).count();
-      std::cout << toc << std::endl;
+      
+      log_vec(0) = toc;
+      log_vec.segment(1, 4) = robot->get_imu_attitude_quaternion();
+      log_vec.segment(5, 8) = robot->get_joint_positions();
+      log_vec.segment(13, 8) = robot->get_joint_velocities();
+      log_vec.segment(21, 8) = robot->get_joint_torques();
+      log_vec.segment(29, 8) = joint_desired_positions;
+      log_vec.segment(37, 8) = joint_desired_velocities;
+      log_vec.segment(45, 8) = joint_desired_torques;
+      print_vector_csv(log_vec);
 
       // uncomment to get delta time rather than absolute time
       // tic = Clock::now();
