@@ -45,6 +45,11 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/06-24-front-hop.csv");
   controller.set_traj(ref_traj);
 
+  auto tic = Clock::now();
+  real_time_tools::Timer::sleep_sec(dt_des);
+  auto toc = std::chrono::duration<double>(Clock::now() - tic).count();
+  real_time_tools::Timer::sleep_sec(dt_des);
+
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
 
@@ -60,7 +65,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       // update network policy
       controller.set_phase(2.0 * M_PI / period * t);
       if (t < period * 2.0) {
-        std::cout << t / (2.0 * period) << std::endl;
+        // std::cout << t / (2.0 * period) << std::endl;
         controller.set_phase(0.0);
       }
       controller.calc_control();
@@ -85,13 +90,13 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
-    // if ((count % 100) == 0) {
-    //   printf("\n");
-    //   print_vector("des_joint_tau", joint_desired_torques);
-    //   print_vector("    joint_pos", robot->get_joint_positions());
-    //   print_vector("des_joint_pos", joint_desired_positions);
-    //   print_vector("    joint_vel", robot->get_joint_velocities());
-    // }
+    if ((count % 1000) == 0) {
+      toc = std::chrono::duration<double>(Clock::now() - tic).count();
+      std::cout << toc << std::endl;
+
+      // uncomment to get delta time rather than absolute time
+      // tic = Clock::now();
+    }
 
     real_time_tools::Timer::sleep_sec(dt_des);
     ++count;
