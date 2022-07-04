@@ -42,7 +42,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/06-22-trot.csv");
-  ref_traj = openData("../traj/06-24-front-hop.csv");
+  ref_traj = openData("../traj/07-04-stand.csv");
   controller.set_traj(ref_traj);
 
   double period = ref_traj(ref_traj.rows() - 1, 0);
@@ -97,7 +97,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
-    if ((count % 20) == 0) {
+    if ((count % 1) == 0) {
       toc = std::chrono::duration<double>(Clock::now() - tic).count();
 
       log_vec(0) = toc;
