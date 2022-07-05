@@ -42,7 +42,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/06-22-trot.csv");
-  ref_traj = openData("../traj/07-05-stand-neg-force.csv");
+  ref_traj = openData("../traj/07-05-squat-neg-force.csv");
   controller.set_traj(ref_traj);
 
   double period = ref_traj(ref_traj.rows() - 1, 0);
