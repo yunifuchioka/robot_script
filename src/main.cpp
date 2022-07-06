@@ -37,12 +37,13 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   NetworkController controller(robot);
   // controller.initialize_network("06-23-trot-angvel01");
-  controller.initialize_network("07-03-urdf");
+  controller.initialize_network("07-05-front-hop-neg");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/06-22-trot.csv");
-  ref_traj = openData("../traj/07-05-squat-neg-force.csv");
+  // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
+  ref_traj = openData("../traj/07-05-front-hop-neg.csv");
   controller.set_traj(ref_traj);
 
   double period = ref_traj(ref_traj.rows() - 1, 0);

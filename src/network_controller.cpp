@@ -111,7 +111,7 @@ void NetworkController::calc_control() {
   VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
 
   // residual network
-  // desired_positions += output;
+  desired_positions += output;
 
   // set Controller variable to send to motors
   desired_positions_ = desired_positions;
