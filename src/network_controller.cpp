@@ -85,7 +85,8 @@ void NetworkController::calc_control() {
 
       observation.segment(0, 4) << imu_attitude_quaternion;
       observation.segment(4, 8) << joint_positions;
-      observation.segment(12, 8) << joint_velocities;
+      // observation.segment(12, 8) << joint_velocities;
+      observation.segment(12, 8) << filtered_velocity_;
       observation.segment(20, 2) << cos(phase_), sin(phase_);
 
       break;
@@ -111,7 +112,7 @@ void NetworkController::calc_control() {
   VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
 
   // residual network
-  // desired_positions += output;
+  desired_positions += output;
 
   // set Controller variable to send to motors
   desired_positions_ = desired_positions;

@@ -27,6 +27,7 @@ class NetworkController : public Controller {
     desired_positions_reference_.setZero();
     desired_velocities_reference_.setZero();
     desired_torques_reference_.setZero();
+    filtered_velocity_.setZero();
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -51,6 +52,9 @@ class NetworkController : public Controller {
   void set_phase(double phase) { phase_ = phase; };
   void set_motion_type(MotionType motion_type) { motion_type_ = motion_type; };
   void set_traj(const Eigen::MatrixXd ref_traj) { ref_traj_ = ref_traj; };
+  void set_filtered_velocity(const Vector8d filtered_velocity) {
+    filtered_velocity_ = filtered_velocity;
+  };
 
  private:
   double phase_;
@@ -60,6 +64,7 @@ class NetworkController : public Controller {
   Vector8d desired_velocities_reference_;
   Vector8d desired_torques_reference_;
   Eigen::MatrixXd ref_traj_;
+  Vector8d filtered_velocity_;
 
   void setReferenceMotionSquat();
   void setReferenceMotionWalk();

@@ -37,7 +37,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   NetworkController controller(robot);
   // controller.initialize_network("06-23-trot-angvel01");
-  controller.initialize_network("07-05-front-hop-neg");
+  controller.initialize_network("07-06-stand-neg-force");
+  // controller.initialize_network("07-05-front-hop-neg");
+  // controller.initialize_network("07-05-trot-neg");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
@@ -45,6 +47,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   ref_traj = openData("../traj/07-05-stand-neg-force.csv");
   // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
   // ref_traj = openData("../traj/07-05-front-hop-neg.csv");
+  // ref_traj = openData("../traj/07-05-trot-neg.csv");
   controller.set_traj(ref_traj);
 
   double period = ref_traj(ref_traj.rows() - 1, 0);
@@ -79,6 +82,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
     if (count % 20 == 0) {  // control_dt = 0.02 in RL code
 
+      // specify filtered velocity to controller to be input into network
+      filtered_velocity = vel_buffer.rowwise().mean();
+      controller.set_filtered_velocity(filtered_velocity);
+
       // update network policy
       controller.set_phase(2.0 * M_PI / period * t);
       if (t < period * 2.0) {
@@ -90,7 +97,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       joint_desired_velocities = controller.get_desired_velocities();
       joint_desired_torques = controller.get_desired_torques();
 
-      filtered_velocity = vel_buffer.rowwise().mean();
+      // reset velocity filter buffer
       vel_buffer.setZero();
       buffer_counter = 0;
     }
