@@ -42,11 +42,20 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/06-22-trot.csv");
+  ref_traj = openData("../traj/07-05-stand-neg-force.csv");
   // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
-  ref_traj = openData("../traj/07-05-front-hop-neg.csv");
+  // ref_traj = openData("../traj/07-05-front-hop-neg.csv");
   controller.set_traj(ref_traj);
 
   double period = ref_traj(ref_traj.rows() - 1, 0);
+
+  // buffer for storing joint velocity values for filtering
+  // length of 20 corresponds to RL policy frequency
+  Eigen::MatrixXd vel_buffer(8, 20);
+  vel_buffer.setZero();
+  unsigned int buffer_counter = 0;
+  Vector8d filtered_velocity;
+  filtered_velocity.setZero();
 
   // PhaseController controller(robot);
   // controller.set_motion_type(PhaseController::squat);
@@ -80,6 +89,10 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       joint_desired_positions = controller.get_desired_positions();
       joint_desired_velocities = controller.get_desired_velocities();
       joint_desired_torques = controller.get_desired_torques();
+
+      filtered_velocity = vel_buffer.rowwise().mean();
+      vel_buffer.setZero();
+      buffer_counter = 0;
     }
 
     // warm start desired_joint_position for safety
@@ -98,13 +111,18 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->set_joint_desired_torques(joint_desired_torques);
     robot->send_joint_commands();
 
+    // store velocity in buffer for filtering
+    vel_buffer.col(buffer_counter) << robot->get_joint_velocities();
+    buffer_counter++;
+
     if ((count % 1) == 0) {
       toc = std::chrono::duration<double>(Clock::now() - tic).count();
 
       log_vec(0) = toc;
       log_vec.segment(1, 4) = robot->get_imu_attitude_quaternion();
       log_vec.segment(5, 8) = robot->get_joint_positions();
-      log_vec.segment(13, 8) = robot->get_joint_velocities();
+      log_vec.segment(13, 8) = filtered_velocity;
+      // log_vec.segment(13, 8) = robot->get_joint_velocities();
       log_vec.segment(21, 8) = robot->get_joint_torques();
       log_vec.segment(29, 8) = joint_desired_positions;
       log_vec.segment(37, 8) = joint_desired_velocities;
