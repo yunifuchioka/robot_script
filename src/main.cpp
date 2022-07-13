@@ -36,18 +36,19 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  // controller.initialize_network("06-23-trot-angvel01");
   // controller.initialize_network("07-06-stand-neg-force");
+  controller.initialize_network("07-12-stand-euler");
   // controller.initialize_network("07-05-front-hop-neg");
-  controller.initialize_network("07-11-limit17");
+  // controller.initialize_network("07-11-limit17");
   // controller.initialize_network("07-05-trot-neg");
+  // controller.initialize_network("07-12-front-hop-euler");
+  // controller.initialize_network("07-12-trot-euler");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
-  // ref_traj = openData("../traj/06-22-trot.csv");
-  // ref_traj = openData("../traj/07-05-stand-neg-force.csv");
+  ref_traj = openData("../traj/07-05-stand-neg-force.csv");
   // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
-  ref_traj = openData("../traj/07-05-front-hop-neg.csv");
+  // ref_traj = openData("../traj/07-05-front-hop-neg.csv");
   // ref_traj = openData("../traj/07-05-trot-neg.csv");
   controller.set_traj(ref_traj);
 
