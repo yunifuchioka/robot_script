@@ -37,7 +37,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   NetworkController controller(robot);
   // controller.initialize_network("07-06-stand-neg-force");
-  controller.initialize_network("07-12-stand-euler");
+  controller.initialize_network("07-13-action-diff");
   // controller.initialize_network("07-05-front-hop-neg");
   // controller.initialize_network("07-11-limit17");
   // controller.initialize_network("07-05-trot-neg");
