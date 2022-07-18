@@ -39,12 +39,15 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("07-06-stand-neg-force");
   // controller.initialize_network("07-13-action-diff");
   // controller.initialize_network("07-14-action-diff-std-05");
-  controller.initialize_network("07-14-joint-std-05");
+  // controller.initialize_network("07-15-joint-std-04");
   // controller.initialize_network("07-05-front-hop-neg");
   // controller.initialize_network("07-11-limit17");
   // controller.initialize_network("07-05-trot-neg");
   // controller.initialize_network("07-12-front-hop-euler");
   // controller.initialize_network("07-12-trot-euler");
+  // controller.initialize_network("07-15-torque-lim27-term50");
+  controller.initialize_network("07-16-torque-lim27-term40");
+  // controller.initialize_network("07-16-torque-lim27-term30");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
