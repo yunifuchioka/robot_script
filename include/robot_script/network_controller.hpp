@@ -12,7 +12,6 @@
 
 class NetworkController : public Controller {
  public:
-  enum MotionType { squat, walk, walk_joint, walk_quat, traj };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -22,7 +21,6 @@ class NetworkController : public Controller {
    */
   NetworkController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
     phase_ = 0;
-    motion_type_ = MotionType::squat;
     ref_traj_.setZero();
     desired_positions_reference_.setZero();
     desired_velocities_reference_.setZero();
@@ -50,7 +48,6 @@ class NetworkController : public Controller {
    * setters for private variables
    */
   void set_phase(double phase) { phase_ = phase; };
-  void set_motion_type(MotionType motion_type) { motion_type_ = motion_type; };
   void set_traj(const Eigen::MatrixXd ref_traj) { ref_traj_ = ref_traj; };
   void set_filtered_velocity(const Vector8d filtered_velocity) {
     filtered_velocity_ = filtered_velocity;
@@ -58,7 +55,6 @@ class NetworkController : public Controller {
 
  private:
   double phase_;
-  MotionType motion_type_;
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
   Vector8d desired_velocities_reference_;
@@ -66,7 +62,5 @@ class NetworkController : public Controller {
   Eigen::MatrixXd ref_traj_;
   Vector8d filtered_velocity_;
 
-  void setReferenceMotionSquat();
-  void setReferenceMotionWalk();
   void setReferenceMotionTraj();
 };
