@@ -186,6 +186,17 @@ class Solo8 {
     joint_velocity_gains_.fill(input_double);
   }
 
+  /**
+   * @brief custom function for determining whether robot has finished its
+   * homing (or "calibration" as ODRI code calls it) sequence
+   *
+   * @return true
+   * @return false
+   */
+  bool isReady() {
+    return state_ == 1 && _is_calibrating == 0 && calibrate_request_ == 0;
+  }
+
  private:
   /**
    * Joint properties
