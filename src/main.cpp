@@ -46,8 +46,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("07-12-front-hop-euler");
   // controller.initialize_network("07-12-trot-euler");
   // controller.initialize_network("07-15-torque-lim27-term50");
-  controller.initialize_network("07-16-torque-lim27-term40");
+  // controller.initialize_network("07-16-torque-lim27-term40");
   // controller.initialize_network("07-16-torque-lim27-term30");
+  controller.initialize_network("07-18-front-hop-no-rand");
   controller.set_motion_type(NetworkController::MotionType::traj);
 
   Eigen::MatrixXd ref_traj;
