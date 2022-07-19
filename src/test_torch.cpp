@@ -8,7 +8,7 @@ std::shared_ptr<Solo8> robot = std::make_shared<Solo8>();
   NetworkController my_network_controller(robot);
   my_network_controller.initialize_network("05-09-phase-squat");
 
-  my_network_controller.set_phase(0.0);
+  my_network_controller.set_time(0.0);
 
   srand((unsigned int)time(0));  // initialize random seed
   my_network_controller.calc_control();

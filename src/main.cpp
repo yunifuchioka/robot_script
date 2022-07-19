@@ -46,9 +46,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("07-12-front-hop-euler");
   // controller.initialize_network("07-12-trot-euler");
   // controller.initialize_network("07-15-torque-lim27-term50");
-  // controller.initialize_network("07-16-torque-lim27-term40");
+  controller.initialize_network("07-16-torque-lim27-term40");
   // controller.initialize_network("07-16-torque-lim27-term30");
-  controller.initialize_network("07-18-front-hop-no-rand");
+  // controller.initialize_network("07-18-front-hop-no-rand");
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/07-05-stand-neg-force.csv");
@@ -94,10 +94,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       controller.set_filtered_velocity(filtered_velocity);
 
       // update network policy
-      controller.set_phase(2.0 * M_PI / period * t);
+      controller.set_time(t);
       if (t < period * 2.0) {
-        // std::cout << t / (2.0 * period) << std::endl;
-        controller.set_phase(0.0);
+        controller.set_time(0.0);
       }
       controller.calc_control();
       joint_desired_positions = controller.get_desired_positions();

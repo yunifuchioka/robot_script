@@ -26,11 +26,14 @@ void NetworkController::calc_control() {
   Eigen::Vector4d imu_attitude_quaternion =
       robot_->get_imu_attitude_quaternion();
 
+  // calculate phase according to time
+  double phase = 2.0 * M_PI / ref_traj_max_time_ * time_;
+
   observation.segment(0, 4) << imu_attitude_quaternion;
   observation.segment(4, 8) << joint_positions;
   // observation.segment(12, 8) << joint_velocities;
   observation.segment(12, 8) << filtered_velocity_;
-  observation.segment(20, 2) << cos(phase_), sin(phase_);
+  observation.segment(20, 2) << cos(phase), sin(phase);
 
   // convert Eigen double vector to torch double tensor. Note the matrix
   // transpose according to the conventions of Eigen and Torch
@@ -66,11 +69,9 @@ void NetworkController::setReferenceMotionTraj() {
   Eigen::Matrix<double, 8, 1> desired_joint_velocity;
   Eigen::Matrix<double, 8, 1> desired_joint_torque;
 
-  int max_phase = ref_traj_.rows() - 1;
-
-  // find reference trajectory index corresponding to current phase
-  int traj_idx = (int)(max_phase / (2.0 * M_PI) * phase_);
-  traj_idx = traj_idx % max_phase;
+  // find reference trajectory index corresponding to current time
+  int traj_idx = (int)(time_ * ref_traj_max_idx_ / ref_traj_max_time_);
+  traj_idx = traj_idx % ref_traj_max_idx_;
 
   Eigen::Matrix<double, 38, 1> traj_t;
   traj_t << ref_traj_.row(traj_idx).transpose();

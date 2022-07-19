@@ -20,8 +20,10 @@ class NetworkController : public Controller {
    * own internal variables
    */
   NetworkController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
-    phase_ = 0;
+    time_ = 0.0;
     ref_traj_.setZero();
+    ref_traj_max_idx_ = 0;
+    ref_traj_max_time_ = 0.0;
     desired_positions_reference_.setZero();
     desired_velocities_reference_.setZero();
     desired_torques_reference_.setZero();
@@ -47,19 +49,25 @@ class NetworkController : public Controller {
   /**
    * setters for private variables
    */
-  void set_phase(double phase) { phase_ = phase; };
-  void set_traj(const Eigen::MatrixXd ref_traj) { ref_traj_ = ref_traj; };
+  void set_time(double time) { time_ = time; };
+  void set_traj(const Eigen::MatrixXd ref_traj) {
+    ref_traj_ = ref_traj;
+    ref_traj_max_idx_ = ref_traj_.rows() - 1;
+    ref_traj_max_time_ = ref_traj(ref_traj_max_idx_, 0);
+  };
   void set_filtered_velocity(const Vector8d filtered_velocity) {
     filtered_velocity_ = filtered_velocity;
   };
 
  private:
-  double phase_;
+  double time_;
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
   Vector8d desired_velocities_reference_;
   Vector8d desired_torques_reference_;
   Eigen::MatrixXd ref_traj_;
+  int ref_traj_max_idx_;
+  double ref_traj_max_time_;
   Vector8d filtered_velocity_;
 
   void setReferenceMotionTraj();
