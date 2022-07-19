@@ -95,9 +95,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
       // update network policy
       controller.set_time(t);
-      if (t < period * 2.0) {
-        controller.set_time(0.0);
-      }
       controller.calc_control();
       joint_desired_positions = controller.get_desired_positions();
       joint_desired_velocities = controller.get_desired_velocities();
@@ -107,16 +104,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
       vel_buffer.setZero();
       buffer_counter = 0;
     }
-
-    // warm start desired_joint_position for safety
-    joint_desired_positions =
-        joint_desired_positions * safety_interp +
-        robot->get_joint_positions() * (1.0 - safety_interp);
-
-    // clamp and warm start desired_torque for safety
-    double clamp_val = safety_torque_limit * safety_interp;
-    joint_desired_torques =
-        joint_desired_torques.cwiseMin(clamp_val).cwiseMax(-clamp_val);
 
     // send desired PD+torque targets to robot
     robot->set_joint_desired_positions(joint_desired_positions);

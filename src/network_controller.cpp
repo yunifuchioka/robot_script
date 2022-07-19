@@ -13,53 +13,79 @@ void NetworkController::initialize_network(const std::string filename) {
 }
 
 void NetworkController::calc_control() {
-  Vector8d desired_positions;
-  VectorObservation observation;
+  switch (controllerState_) {
+    case ControllerState::homing:
+      desired_positions_.setZero();
+      desired_velocities_.setZero();
+      desired_torques_.setZero();
 
-  // set desired position to reference according to residual policy
-  setReferenceMotionTraj();
-  desired_positions = desired_positions_reference_;
+      if (robot_->isReady()) {
+        controllerState_ = ControllerState::stand;
+        time_stamp_state_change_ = time_;
+      }
+      break;
 
-  // get sensor data
-  Vector8d joint_positions = robot_->get_joint_positions();
-  Vector8d joint_velocities = robot_->get_joint_velocities();
-  Eigen::Vector4d imu_attitude_quaternion =
-      robot_->get_imu_attitude_quaternion();
+    case ControllerState::stand:
+      desired_positions_ << M_PI / 4, -M_PI / 2, M_PI / 4, -M_PI / 2, -M_PI / 4,
+          M_PI / 2, -M_PI / 4, M_PI / 2;
 
-  // calculate phase according to time
-  double phase = 2.0 * M_PI / ref_traj_max_time_ * time_;
+      desired_positions_ =
+          desired_positions_ *
+          std::min(1.0, std::max(time_ - time_stamp_state_change_, 0.0));
 
-  observation.segment(0, 4) << imu_attitude_quaternion;
-  observation.segment(4, 8) << joint_positions;
-  // observation.segment(12, 8) << joint_velocities;
-  observation.segment(12, 8) << filtered_velocity_;
-  observation.segment(20, 2) << cos(phase), sin(phase);
+      break;
 
-  // convert Eigen double vector to torch double tensor. Note the matrix
-  // transpose according to the conventions of Eigen and Torch
-  torch::Tensor input_tensor =
-      torch::from_blob(observation.data(), {1, NETWORK_INPUT_DIM}, at::kDouble)
-          .clone();
+    case ControllerState::motion:
+      Vector8d desired_positions;
+      VectorObservation observation;
 
-  // convert torch double tensor to torchscript float IValue
-  std::vector<torch::jit::IValue> input_ivalue;
-  input_ivalue.push_back(input_tensor.to(torch::kFloat));
+      // set desired position to reference according to residual policy
+      setReferenceMotionTraj();
+      desired_positions = desired_positions_reference_;
 
-  // evaluate network
-  torch::Tensor output_tensor =
-      network_.forward(input_ivalue).toTuple()->elements()[0].toTensor();
+      // get sensor data
+      Vector8d joint_positions = robot_->get_joint_positions();
+      Vector8d joint_velocities = robot_->get_joint_velocities();
+      Eigen::Vector4d imu_attitude_quaternion =
+          robot_->get_imu_attitude_quaternion();
 
-  // convert network output to Eigen double vector. Note the matrix
-  // transpose according to the conventions of Eigen and Torch
-  VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
+      // calculate phase according to time
+      double phase = 2.0 * M_PI / ref_traj_max_time_ * time_;
 
-  // residual network
-  desired_positions += output;
+      observation.segment(0, 4) << imu_attitude_quaternion;
+      observation.segment(4, 8) << joint_positions;
+      // observation.segment(12, 8) << joint_velocities;
+      observation.segment(12, 8) << filtered_velocity_;
+      observation.segment(20, 2) << cos(phase), sin(phase);
 
-  // set Controller variable to send to motors
-  desired_positions_ = desired_positions;
-  desired_velocities_ = desired_velocities_reference_;
-  desired_torques_ = desired_torques_reference_;
+      // convert Eigen double vector to torch double tensor. Note the matrix
+      // transpose according to the conventions of Eigen and Torch
+      torch::Tensor input_tensor =
+          torch::from_blob(observation.data(), {1, NETWORK_INPUT_DIM},
+                           at::kDouble)
+              .clone();
+
+      // convert torch double tensor to torchscript float IValue
+      std::vector<torch::jit::IValue> input_ivalue;
+      input_ivalue.push_back(input_tensor.to(torch::kFloat));
+
+      // evaluate network
+      torch::Tensor output_tensor =
+          network_.forward(input_ivalue).toTuple()->elements()[0].toTensor();
+
+      // convert network output to Eigen double vector. Note the matrix
+      // transpose according to the conventions of Eigen and Torch
+      VectorAction output(output_tensor.to(torch::kDouble).data_ptr<double>());
+
+      // residual network
+      desired_positions += output;
+
+      // set Controller variable to send to motors
+      desired_positions_ = desired_positions;
+      desired_velocities_ = desired_velocities_reference_;
+      desired_torques_ = desired_torques_reference_;
+      break;
+  }
 }
 
 void NetworkController::setReferenceMotionTraj() {

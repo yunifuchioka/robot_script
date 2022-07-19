@@ -12,6 +12,7 @@
 
 class NetworkController : public Controller {
  public:
+  enum ControllerState { homing, stand, motion };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 
@@ -20,7 +21,9 @@ class NetworkController : public Controller {
    * own internal variables
    */
   NetworkController(const std::shared_ptr<Solo8>& robot) : Controller{robot} {
+    controllerState_ = ControllerState::homing;
     time_ = 0.0;
+    time_stamp_state_change_ = 0.0;
     ref_traj_.setZero();
     ref_traj_max_idx_ = 0;
     ref_traj_max_time_ = 0.0;
@@ -60,7 +63,9 @@ class NetworkController : public Controller {
   };
 
  private:
+  ControllerState controllerState_;
   double time_;
+  double time_stamp_state_change_;
   torch::jit::script::Module network_;
   Vector8d desired_positions_reference_;
   Vector8d desired_velocities_reference_;
