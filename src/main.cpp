@@ -72,15 +72,13 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
 
   auto tic = Clock::now();
   real_time_tools::Timer::sleep_sec(dt_des);
-  auto toc = std::chrono::duration<double>(Clock::now() - tic).count();
   real_time_tools::Timer::sleep_sec(dt_des);
 
   Eigen::VectorXd log_vec(53);  // vector to print when logging to csv
 
   while (!CTRL_C_DETECTED) {
     robot->acquire_sensors();
-
-    t += dt_des;
+    t = std::chrono::duration<double>(Clock::now() - tic).count();
 
     if (count % 20 == 0) {  // control_dt = 0.02 in RL code
 
@@ -111,9 +109,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     buffer_counter++;
 
     if ((count % 1) == 0) {
-      toc = std::chrono::duration<double>(Clock::now() - tic).count();
-
-      log_vec(0) = toc;
+      log_vec(0) = t;
       log_vec.segment(1, 4) = robot->get_imu_attitude_quaternion();
       log_vec.segment(5, 8) = robot->get_joint_positions();
       log_vec.segment(13, 8) = filtered_velocity;
