@@ -57,8 +57,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/07-05-trot-neg.csv");
   controller.set_traj(ref_traj);
 
-  double period = ref_traj(ref_traj.rows() - 1, 0);
-
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency
   Eigen::MatrixXd vel_buffer(8, 20);
@@ -83,9 +81,6 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
     robot->acquire_sensors();
 
     t += dt_des;
-
-    // slowly goes from 0 to 1 after some delay
-    double safety_interp = std::min(1.0, std::max(t - safety_delay, 0.0));
 
     if (count % 20 == 0) {  // control_dt = 0.02 in RL code
 

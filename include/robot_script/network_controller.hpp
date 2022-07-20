@@ -75,5 +75,5 @@ class NetworkController : public Controller {
   double ref_traj_max_time_;
   Vector8d filtered_velocity_;
 
-  void setReferenceMotionTraj();
+  void setReferenceMotionTraj(const int traj_idx);
 };
