@@ -87,7 +87,7 @@ void NetworkController::calc_control() {
 
       // FSM state transition after some time, for the user to put the robot on
       // the ground
-      if (time_ - time_stamp_state_change_ > 5.0) {
+      if (time_ - time_stamp_state_change_ > 10.0) {
         controllerState_ = ControllerState::motion;
         time_stamp_state_change_ = time_;
       }
@@ -95,11 +95,21 @@ void NetworkController::calc_control() {
       break;
 
     case ControllerState::motion:
-      // set joint targets according to residual neural network policy
-      desired_positions_ = desired_positions_reference_;
-      desired_positions_ += output;
-      desired_velocities_ = desired_velocities_reference_;
-      desired_torques_ = desired_torques_reference_;
+
+      // temporary
+      if ((time_ - time_stamp_state_change_) < ref_traj_max_time_) {
+        // set joint targets according to residual neural network policy
+        desired_positions_ = desired_positions_reference_;
+        desired_positions_ += output;
+        desired_velocities_ = desired_velocities_reference_;
+        desired_torques_ = desired_torques_reference_;
+      }
+
+      // // set joint targets according to residual neural network policy
+      // desired_positions_ = desired_positions_reference_;
+      // desired_positions_ += output;
+      // desired_velocities_ = desired_velocities_reference_;
+      // desired_torques_ = desired_torques_reference_;
 
       break;
   }

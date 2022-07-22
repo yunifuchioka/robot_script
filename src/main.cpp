@@ -14,10 +14,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   std::shared_ptr<Solo8> robot = thread_data_ptr->robot;
 
   double dt_des = 0.001;
-  double kp = 3.0;
+  double kp = 4.0; // temporary
   double kd = 0.5;
-  double safety_delay = 2.0;
-  double safety_torque_limit = 100.0;
 
   Vector8d joint_desired_positions;
   Vector8d joint_desired_velocities;
@@ -46,15 +44,17 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("07-12-front-hop-euler");
   // controller.initialize_network("07-12-trot-euler");
   // controller.initialize_network("07-15-torque-lim27-term50");
-  controller.initialize_network("07-16-torque-lim27-term40");
+  // controller.initialize_network("07-16-torque-lim27-term40");
   // controller.initialize_network("07-16-torque-lim27-term30");
   // controller.initialize_network("07-18-front-hop-no-rand");
+  controller.initialize_network("07-21-quat-wrap-2");
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/07-05-stand-neg-force.csv");
   // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
-  ref_traj = openData("../traj/07-05-front-hop-neg.csv");
+  // ref_traj = openData("../traj/07-05-front-hop-neg.csv");
   // ref_traj = openData("../traj/07-05-trot-neg.csv");
+  ref_traj = openData("../traj/07-21-180-backflip-2.csv");
   controller.set_traj(ref_traj);
 
   // buffer for storing joint velocity values for filtering
