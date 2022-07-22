@@ -90,8 +90,6 @@ void NetworkController::calc_control() {
       if (time_ - time_stamp_state_change_ > 5.0) {
         controllerState_ = ControllerState::motion;
         time_stamp_state_change_ = time_;
-
-        std::cout << "state change to motion" << std::endl << std::endl;
       }
 
       break;
