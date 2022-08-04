@@ -96,20 +96,20 @@ void NetworkController::calc_control() {
 
     case ControllerState::motion:
 
-      // temporary
-      if ((time_ - time_stamp_state_change_) < ref_traj_max_time_) {
-        // set joint targets according to residual neural network policy
-        desired_positions_ = desired_positions_reference_;
-        desired_positions_ += output;
-        desired_velocities_ = desired_velocities_reference_;
-        desired_torques_ = desired_torques_reference_;
-      }
+      // // temporary
+      // if ((time_ - time_stamp_state_change_) < ref_traj_max_time_) {
+      //   // set joint targets according to residual neural network policy
+      //   desired_positions_ = desired_positions_reference_;
+      //   desired_positions_ += output;
+      //   desired_velocities_ = desired_velocities_reference_;
+      //   desired_torques_ = desired_torques_reference_;
+      // }
 
-      // // set joint targets according to residual neural network policy
-      // desired_positions_ = desired_positions_reference_;
-      // desired_positions_ += output;
-      // desired_velocities_ = desired_velocities_reference_;
-      // desired_torques_ = desired_torques_reference_;
+      // set joint targets according to residual neural network policy
+      desired_positions_ = desired_positions_reference_;
+      desired_positions_ += output;
+      desired_velocities_ = desired_velocities_reference_;
+      desired_torques_ = desired_torques_reference_;
 
       break;
   }

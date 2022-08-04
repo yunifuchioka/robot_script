@@ -34,29 +34,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  // controller.initialize_network("07-06-stand-neg-force");
-  // controller.initialize_network("07-13-action-diff");
-  // controller.initialize_network("07-14-action-diff-std-05");
-  // controller.initialize_network("07-15-joint-std-04");
-  // controller.initialize_network("07-05-front-hop-neg");
-  // controller.initialize_network("07-11-limit17");
-  // controller.initialize_network("07-05-trot-neg");
-  // controller.initialize_network("07-12-front-hop-euler");
-  // controller.initialize_network("07-12-trot-euler");
-  // controller.initialize_network("07-15-torque-lim27-term50");
-  // controller.initialize_network("07-16-torque-lim27-term40");
-  // controller.initialize_network("07-16-torque-lim27-term30");
-  // controller.initialize_network("07-18-front-hop-no-rand");
-  // controller.initialize_network("07-21-quat-wrap-3");
-  controller.initialize_network("07-22-max-torque");
-  // controller.initialize_network("07-23-torque-lim-27-std-25");
+  controller.initialize_network("08-03-trot");
 
   Eigen::MatrixXd ref_traj;
-  // ref_traj = openData("../traj/07-05-stand-neg-force.csv");
-  // ref_traj = openData("../traj/07-05-squat-neg-force.csv");
-  // ref_traj = openData("../traj/07-05-front-hop-neg.csv");
-  // ref_traj = openData("../traj/07-05-trot-neg.csv");
-  ref_traj = openData("../traj/07-21-180-backflip-2.csv");
+  // ref_traj = openData("../traj/08-03-stand.csv");
+  // ref_traj = openData("../traj/08-03-squat.csv");
+  ref_traj = openData("../traj/08-03-trot.csv");
   controller.set_traj(ref_traj);
 
   // buffer for storing joint velocity values for filtering
