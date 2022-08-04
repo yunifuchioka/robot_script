@@ -14,7 +14,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   std::shared_ptr<Solo8> robot = thread_data_ptr->robot;
 
   double dt_des = 0.001;
-  double kp = 4.0; // temporary
+  double kp = 3.0;
   double kd = 0.5;
 
   Vector8d joint_desired_positions;
@@ -47,7 +47,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("07-16-torque-lim27-term40");
   // controller.initialize_network("07-16-torque-lim27-term30");
   // controller.initialize_network("07-18-front-hop-no-rand");
-  controller.initialize_network("07-21-quat-wrap-2");
+  // controller.initialize_network("07-21-quat-wrap-3");
+  controller.initialize_network("07-22-max-torque");
+  // controller.initialize_network("07-23-torque-lim-27-std-25");
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/07-05-stand-neg-force.csv");
