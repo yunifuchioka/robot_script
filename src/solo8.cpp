@@ -48,6 +48,7 @@ Solo8::Solo8() {
   imu_attitude_.setZero();
   imu_linear_acceleration_.setZero();
   imu_attitude_quaternion_.setZero();
+  imu_attitude_quaternion_prev_.setZero();
   /**
    * Setup some known data
    */
@@ -152,6 +153,24 @@ void Solo8::acquire_sensors() {
   imu_attitude_quaternion_ << raw_imu_quat(3), raw_imu_quat(0),
       -raw_imu_quat(1), -raw_imu_quat(2);
 
+  // quaternion convention yf-08-18
+  if (imu_attitude_quaternion_prev_.sum() == 0) {
+    // first call to acquire_sensors
+    // make sure that w >= 0
+    if (imu_attitude_quaternion_[0] <= 0) {
+      imu_attitude_quaternion_ *= -1;
+    }
+  } else {
+    // if any quaternion componenent changes sign, then q <- -q
+    for (unsigned int quat_idx = 0; quat_idx < 4; quat_idx++) {
+      if (abs(imu_attitude_quaternion_[quat_idx] -
+              imu_attitude_quaternion_prev_[quat_idx]) > 1.0) {
+        imu_attitude_quaternion_ *= -1;
+        continue;
+      }
+    }
+  }
+
   // motor status
   ConstRefVectorXb motor_enabled = joints->GetEnabled();
   ConstRefVectorXb motor_ready = joints->GetReady();
@@ -167,6 +186,9 @@ void Solo8::acquire_sensors() {
     motor_board_errors_[i] = motor_board_errors[i];
     motor_board_enabled_[i] = motor_driver_enabled[i];
   }
+
+  // set imu quaternion memory for detecting wrapping
+  imu_attitude_quaternion_prev_ << imu_attitude_quaternion_;
 }
 
 void Solo8::send_joint_commands() {

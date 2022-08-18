@@ -255,6 +255,7 @@ class Solo8 {
   Eigen::Vector3d imu_attitude_;
   Eigen::Vector3d imu_linear_acceleration_;
   Eigen::Vector4d imu_attitude_quaternion_;
+  Eigen::Vector4d imu_attitude_quaternion_prev_;
 
   /**
    * Drivers communication objects
