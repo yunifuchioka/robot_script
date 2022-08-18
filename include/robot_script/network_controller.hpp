@@ -12,7 +12,7 @@
 
 class NetworkController : public Controller {
  public:
-  enum ControllerState { homing, stand, motion };
+  enum ControllerState { homing, stand, fold, motion };
   typedef Eigen::Matrix<double, NETWORK_INPUT_DIM, 1> VectorObservation;
   typedef Eigen::Matrix<double, NETWORK_OUTPUT_DIM, 1> VectorAction;
 

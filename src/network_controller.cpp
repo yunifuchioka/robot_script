@@ -70,9 +70,22 @@ void NetworkController::calc_control() {
 
       // FSM state transition if homing procedure is finished
       if (robot_->isReady()) {
-        controllerState_ = ControllerState::stand;
+        // controllerState_ = ControllerState::stand;
+        controllerState_ = ControllerState::fold;
         time_stamp_state_change_ = time_;
       }
+      break;
+
+    case ControllerState::fold:
+      // set desired pose according legs being folded
+      desired_positions_ << M_PI / 2.0, M_PI, M_PI / 2.0, M_PI, -M_PI / 2.0,
+          M_PI, -M_PI / 2.0, M_PI;
+
+      // warm start
+      desired_positions_ =
+          desired_positions_ *
+          std::min(1.0, std::max(time_ - time_stamp_state_change_, 0.0));
+
       break;
 
     case ControllerState::stand:
