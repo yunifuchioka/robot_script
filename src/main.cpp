@@ -34,18 +34,18 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   double t = 0.0;
 
   NetworkController controller(robot);
-  controller.initialize_network("08-03-trot");
+  // controller.initialize_network("08-03-trot");
   // controller.initialize_network("08-03-180-backflip");
   // controller.initialize_network("08-15-back-cartwheel");
-  // controller.initialize_network("08-16-biped-step");
+  controller.initialize_network("08-16-biped-step");
 
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/08-03-stand.csv");
   // ref_traj = openData("../traj/08-03-squat.csv");
-  ref_traj = openData("../traj/08-03-trot.csv");
+  // ref_traj = openData("../traj/08-03-trot.csv");
   // ref_traj = openData("../traj/08-03-180-backflip.csv");
   // ref_traj = openData("../traj/08-15-back-cartwheel.csv");
-  // ref_traj = openData("../traj/08-16-biped-step-ref.csv");
+  ref_traj = openData("../traj/08-16-biped-step-ref.csv");
   controller.set_traj(ref_traj);
 
   // buffer for storing joint velocity values for filtering

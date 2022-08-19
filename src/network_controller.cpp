@@ -70,8 +70,8 @@ void NetworkController::calc_control() {
 
       // FSM state transition if homing procedure is finished
       if (robot_->isReady()) {
-        // controllerState_ = ControllerState::stand;
-        controllerState_ = ControllerState::fold;
+        controllerState_ = ControllerState::stand;
+        // controllerState_ = ControllerState::fold;
         time_stamp_state_change_ = time_;
       }
       break;
