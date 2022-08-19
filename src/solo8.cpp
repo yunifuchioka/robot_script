@@ -171,6 +171,15 @@ void Solo8::acquire_sensors() {
     }
   }
 
+  // zero-yaw filter
+  // assumes that large yaw angle variations don't occur
+  if (imu_attitude_quaternion_.head(3).norm() < 10e-6) {
+    imu_attitude_quaternion_ << 1.0, 0.0, 0.0, 0.0;
+  } else {
+    imu_attitude_quaternion_(3) = 0.0;
+    imu_attitude_quaternion_.head(3).normalize();
+  }
+
   // motor status
   ConstRefVectorXb motor_enabled = joints->GetEnabled();
   ConstRefVectorXb motor_ready = joints->GetReady();
