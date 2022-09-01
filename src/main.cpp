@@ -39,14 +39,16 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/08-19-trot.csv");
   // ref_traj = openData("../traj/08-19-front-hop.csv");
   // ref_traj = openData("../traj/08-29-jump.csv");
-  ref_traj = openData("../traj/08-24-biped-step.csv");
+  // ref_traj = openData("../traj/08-24-biped-step.csv");
+  ref_traj = openData("../traj/08-31-jump.csv");
 
   NetworkController controller(robot);
   controller.set_traj(ref_traj);
   // controller.initialize_network("08-26-trot");
   // controller.initialize_network("08-31-front-hop");
   // controller.initialize_network("08-30-jump-1");
-  controller.initialize_network("08-31-biped-zhaoming");
+  // controller.initialize_network("08-31-biped-zhaoming");
+  controller.initialize_network("08-31-jump");
 
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency
