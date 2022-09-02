@@ -7,7 +7,10 @@
 #include "controller.hpp"
 #include "torch/script.h"
 
-#define NETWORK_INPUT_DIM 22
+// #define NETWORK_INPUT_DIM 22
+#define HORIZON 3
+#define SENSOR_DIM 20
+#define NETWORK_INPUT_DIM (HORIZON + 1) * SENSOR_DIM + 2
 #define NETWORK_OUTPUT_DIM 8
 
 class NetworkController : public Controller {
@@ -31,6 +34,7 @@ class NetworkController : public Controller {
     desired_velocities_reference_.setZero();
     desired_torques_reference_.setZero();
     filtered_velocity_.setZero();
+    sensor_history_.setZero(HORIZON * SENSOR_DIM);
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -74,6 +78,7 @@ class NetworkController : public Controller {
   int ref_traj_max_idx_;
   double ref_traj_max_time_;
   Vector8d filtered_velocity_;
+  Eigen::VectorXd sensor_history_;
 
   void setReferenceMotionTraj(const int traj_idx);
 };

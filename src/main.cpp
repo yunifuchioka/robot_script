@@ -36,8 +36,8 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/08-03-stand.csv");
   // ref_traj = openData("../traj/08-03-squat.csv");
-  // ref_traj = openData("../traj/08-19-trot.csv");
-  ref_traj = openData("../traj/08-19-front-hop.csv");
+  ref_traj = openData("../traj/08-19-trot.csv");
+  // ref_traj = openData("../traj/08-19-front-hop.csv");
   // ref_traj = openData("../traj/08-29-jump.csv");
   // ref_traj = openData("../traj/08-24-biped-step.csv");
   // ref_traj = openData("../traj/08-31-jump.csv");
@@ -49,7 +49,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("08-30-jump-1");
   // controller.initialize_network("08-31-biped-zhaoming");
   // controller.initialize_network("08-31-jump");
-  controller.initialize_network("09-01-front-hop");
+  // controller.initialize_network("09-01-front-hop");
+  // below are history conditioned policies
+  controller.initialize_network("09-02-trot");
 
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency

@@ -33,11 +33,31 @@ void NetworkController::calc_control() {
 
   // construct network input (ie RL observation)
   VectorObservation observation;
-  observation.segment(0, 4) << imu_attitude_quaternion;
-  observation.segment(4, 8) << joint_positions;
-  // observation.segment(12, 8) << joint_velocities;
-  observation.segment(12, 8) << filtered_velocity_;
-  observation.segment(20, 2) << cos(phase), sin(phase);
+  observation << imu_attitude_quaternion, joint_positions, filtered_velocity_,
+      sensor_history_, cos(phase), sin(phase);
+
+  // update sensor history for the next control step
+  sensor_history_.tail((HORIZON - 1) * SENSOR_DIM)
+      << sensor_history_.head((HORIZON - 1) * SENSOR_DIM);
+  // TODO: update for aliasing resolve policies
+  // << sensor_history_.head((HORIZON - 1) * SENSOR_DIM).eval();
+  sensor_history_.head(SENSOR_DIM) << imu_attitude_quaternion, joint_positions,
+      filtered_velocity_;
+
+  // std::cout << observation.segment(0, 4).transpose() << std::endl;
+  // std::cout << observation.segment(4, 8).transpose() << std::endl;
+  // std::cout << observation.segment(12, 8).transpose() << std::endl;
+  // std::cout << observation.segment(20, 4).transpose() << std::endl;
+  // std::cout << observation.segment(24, 8).transpose() << std::endl;
+  // std::cout << observation.segment(32, 8).transpose() << std::endl;
+  // std::cout << observation.segment(40, 4).transpose() << std::endl;
+  // std::cout << observation.segment(44, 8).transpose() << std::endl;
+  // std::cout << observation.segment(52, 8).transpose() << std::endl;
+  // std::cout << observation.segment(60, 4).transpose() << std::endl;
+  // std::cout << observation.segment(64, 8).transpose() << std::endl;
+  // std::cout << observation.segment(72, 8).transpose() << std::endl;
+  // std::cout << observation.segment(80, 2).transpose() << std::endl <<
+  // std::endl;
 
   // convert Eigen double vector to torch double tensor. Note the matrix
   // transpose according to the conventions of Eigen and Torch
