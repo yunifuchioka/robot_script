@@ -37,9 +37,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/08-03-stand.csv");
   // ref_traj = openData("../traj/08-03-squat.csv");
   // ref_traj = openData("../traj/08-19-trot.csv");
-  // ref_traj = openData("../traj/08-19-front-hop.csv");
+  ref_traj = openData("../traj/08-19-front-hop.csv");
   // ref_traj = openData("../traj/08-29-jump.csv");
-  ref_traj = openData("../traj/08-24-biped-step.csv");
+  // ref_traj = openData("../traj/08-24-biped-step.csv");
   // ref_traj = openData("../traj/08-31-jump.csv");
   // ref_traj = openData("../traj/09-01-jump.csv");
 
@@ -55,7 +55,12 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("09-02-trot");
   // controller.initialize_network("09-01-front-hop-2");
   // controller.initialize_network("09-01-jump");
-  controller.initialize_network("09-01-biped-step");
+  // controller.initialize_network("09-01-biped-step");
+  // controller.initialize_network("09-03-trot-torque-position");
+  // controller.initialize_network("09-02-front-hop");
+  // controller.initialize_network("09-03-front-hop-torque-noise-2");
+  // controller.initialize_network("09-04-front-hop-offset-only");
+  controller.initialize_network("09-03-front-hop-offset");
 
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency

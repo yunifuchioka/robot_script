@@ -10,7 +10,8 @@
 // #define NETWORK_INPUT_DIM 22
 #define HORIZON 3
 #define SENSOR_DIM 20
-#define NETWORK_INPUT_DIM (HORIZON + 1) * SENSOR_DIM + 2
+#define ACTION_DIM 8
+#define NETWORK_INPUT_DIM (HORIZON + 1) * SENSOR_DIM + HORIZON* ACTION_DIM + 2
 #define NETWORK_OUTPUT_DIM 8
 
 class NetworkController : public Controller {
@@ -35,6 +36,7 @@ class NetworkController : public Controller {
     desired_torques_reference_.setZero();
     filtered_velocity_.setZero();
     sensor_history_.setZero(HORIZON * SENSOR_DIM);
+    action_history_.setZero(HORIZON * ACTION_DIM);
     // TODO: initialize network to something safe, prior to initialize_network
     // call
   }
@@ -79,6 +81,7 @@ class NetworkController : public Controller {
   double ref_traj_max_time_;
   Vector8d filtered_velocity_;
   Eigen::VectorXd sensor_history_;
+  Eigen::VectorXd action_history_;
 
   void setReferenceMotionTraj(const int traj_idx);
 };
