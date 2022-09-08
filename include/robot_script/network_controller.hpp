@@ -7,11 +7,11 @@
 #include "controller.hpp"
 #include "torch/script.h"
 
-// #define NETWORK_INPUT_DIM 22
+#define NETWORK_INPUT_DIM 22
 #define HORIZON 3
 #define SENSOR_DIM 20
 #define ACTION_DIM 8
-#define NETWORK_INPUT_DIM (HORIZON + 1) * SENSOR_DIM + HORIZON* ACTION_DIM + 2
+// #define NETWORK_INPUT_DIM (HORIZON + 1) * SENSOR_DIM + HORIZON* ACTION_DIM + 2
 #define NETWORK_OUTPUT_DIM 8
 
 class NetworkController : public Controller {

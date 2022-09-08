@@ -5,9 +5,9 @@ from model import ActorCriticNet
 
 model_dir = "../models/"
 
-# model_input_dim = 22
+model_input_dim = 22
 # model_input_dim = 82
-model_input_dim = 106
+# model_input_dim = 106
 model_hidden_dims = [128, 128]
 model_output_dim = 8
 

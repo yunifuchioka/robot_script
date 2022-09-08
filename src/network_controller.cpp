@@ -33,8 +33,11 @@ void NetworkController::calc_control() {
 
   // construct network input (ie RL observation)
   VectorObservation observation;
+  // observation << imu_attitude_quaternion, joint_positions,
+  // filtered_velocity_,
+  //     sensor_history_, action_history_, cos(phase), sin(phase);
   observation << imu_attitude_quaternion, joint_positions, filtered_velocity_,
-      sensor_history_, action_history_, cos(phase), sin(phase);
+      cos(phase), sin(phase);
 
   // // uncomment to print observation components
   // std::cout << observation.segment(0, 4).transpose() << std::endl;
@@ -52,7 +55,8 @@ void NetworkController::calc_control() {
   // std::cout << observation.segment(80, 8).transpose() << std::endl;
   // std::cout << observation.segment(88, 8).transpose() << std::endl;
   // std::cout << observation.segment(96, 8).transpose() << std::endl;
-  // std::cout << observation.segment(104, 2).transpose() << std::endl << std::endl;
+  // std::cout << observation.segment(104, 2).transpose() << std::endl <<
+  // std::endl;
 
   // convert Eigen double vector to torch double tensor. Note the matrix
   // transpose according to the conventions of Eigen and Torch
@@ -149,8 +153,8 @@ void NetworkController::calc_control() {
       // set joint targets according to residual neural network policy
       desired_positions_ = desired_positions_reference_;
       desired_positions_ += output;
-      desired_velocities_ = desired_velocities_reference_;
-      desired_torques_ = desired_torques_reference_;
+      // desired_velocities_ = desired_velocities_reference_;
+      // desired_torques_ = desired_torques_reference_;
 
       break;
   }
