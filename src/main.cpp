@@ -37,11 +37,11 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // ref_traj = openData("../traj/08-03-stand.csv");
   // ref_traj = openData("../traj/08-03-squat.csv");
   // ref_traj = openData("../traj/08-19-trot.csv");
-  ref_traj = openData("../traj/08-19-front-hop.csv");
+  // ref_traj = openData("../traj/08-19-front-hop.csv");
   // ref_traj = openData("../traj/08-29-jump.csv");
   // ref_traj = openData("../traj/08-24-biped-step.csv");
   // ref_traj = openData("../traj/08-31-jump.csv");
-  // ref_traj = openData("../traj/09-01-jump.csv");
+  ref_traj = openData("../traj/09-01-jump.csv");
 
   NetworkController controller(robot);
   controller.set_traj(ref_traj);
@@ -65,10 +65,15 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("09-06-trot");
   // controller.initialize_network("09-05-front-hop");
   // controller.initialize_network("09-05-zhaoming_biped");
+  // below are non-history conditioned policies
   // controller.initialize_network("09-07-trot-no-hist-less-action-torque");
   // controller.initialize_network("09-06-no-hist-less-action-torque");
   // controller.initialize_network("09-06-biped-step-no-history");
-  controller.initialize_network("09-07-front-hop-no-hist-less-action-torque");
+  // controller.initialize_network("09-07-front-hop-no-hist-less-action-torque");
+  // controller.initialize_network("09-07-zhaoming_biped_iter69000");
+  // controller.initialize_network("09-07-biped-step-impedance-kd05");
+  // controller.initialize_network("09-07-biped-step-impedance-more-action-torque");
+  controller.initialize_network("09-08-front-hop-impedance-iter10000");
 
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency
