@@ -143,10 +143,7 @@ void NetworkController::calc_control() {
       //   // set joint targets according to residual neural network policy
       //   desired_positions_ = desired_positions_reference_;
       //   desired_positions_ += output;
-      //   desired_velocities_ = desired_velocities_reference_;
-      //   // temp: clip velocity
-      //   desired_velocities_
-      //       << desired_velocities_.cwiseMin(10.0).cwiseMax(-10.0);
+      //   // desired_velocities_ = desired_velocities_reference_;
       //   desired_torques_ = desired_torques_reference_;
       // }
 
