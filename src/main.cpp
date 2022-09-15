@@ -36,9 +36,9 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   Eigen::MatrixXd ref_traj;
   // ref_traj = openData("../traj/08-03-stand.csv");
   // ref_traj = openData("../traj/08-03-squat.csv");
-  ref_traj = openData("../traj/08-19-trot.csv");
+  // ref_traj = openData("../traj/08-19-trot.csv");
   // ref_traj = openData("../traj/08-19-front-hop.csv");
-  // ref_traj = openData("../traj/08-19-180-backflip.csv");
+  ref_traj = openData("../traj/08-19-180-backflip.csv");
   // ref_traj = openData("../traj/08-29-jump.csv");
   // ref_traj = openData("../traj/08-24-biped-step.csv");
   // ref_traj = openData("../traj/08-31-jump.csv");
@@ -78,9 +78,17 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("09-08-front-hop-impedance-iter10000");
   // controller.initialize_network("09-08-front-hop-impedance");
   // controller.initialize_network("09-08-front-hop-impedance-torque");
-  controller.initialize_network("09-10-trot-pos-torque");
+  // controller.initialize_network("09-10-trot-pos-torque");
   // controller.initialize_network("09-08-biped-step-feedforward");
   // controller.initialize_network("09-09-180-backflip-pos-torque");
+
+  // controller.initialize_network("09-10-front-hop-pos-iter65500");
+  // controller.initialize_network("09-10-front-hop-pos-torque-iter65500");
+  // controller.initialize_network("09-10-front-hop-pos-vel-torque-iter65500");
+
+  // controller.initialize_network("09-12-180-backflip-seed2-iter66000");
+  // controller.initialize_network("09-12-180-backflip-pos-torque-seed3-iter66000");
+  controller.initialize_network("09-12-180-backflip-pos-vel-torque-seed2-iter66000");
 
   // buffer for storing joint velocity values for filtering
   // length of 20 corresponds to RL policy frequency
