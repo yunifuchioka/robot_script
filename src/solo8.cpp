@@ -177,7 +177,7 @@ void Solo8::acquire_sensors() {
   //   imu_attitude_quaternion_ << 1.0, 0.0, 0.0, 0.0;
   // } else {
   //   imu_attitude_quaternion_(3) = 0.0;
-  //   imu_attitude_quaternion_.head(3).normalize();
+  //   // imu_attitude_quaternion_.head(3).normalize();
   // }
 
   // // zero-roll filter
