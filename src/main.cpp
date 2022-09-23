@@ -101,6 +101,7 @@ static THREAD_FUNCTION_RETURN_TYPE control_loop(void* thread_data_void_ptr) {
   // controller.initialize_network("final-front-hop-pt-iter60k");
   // controller.initialize_network("final-front-hop-pt-iter70k");
   // controller.initialize_network("final-180-backflip-pt");
+  // controller.initialize_network("final-biped-step-pt-iter40k");
   controller.initialize_network("final-biped-step-pt-iter50k");
   // controller.initialize_network("final-biped-step-pt-iter60k");
   // controller.initialize_network("final-biped-step-pt-iter70k");
